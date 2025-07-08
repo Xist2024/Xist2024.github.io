@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xist2024 的个人主页</title>
+    <style>
+        /* 全局样式 */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #fff; /* 全局文字颜色 */
+            overflow: hidden; /* 防止渐变超出视口产生滚动条 */
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); /* 渐变背景 */
+            animation: gradientAnimation 10s ease infinite alternate; /* 渐变动画 */
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        /* 容器样式 */
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* 响应式网格布局 */
+            gap: 25px; /* 卡片间距 */
+            padding: 30px;
+            max-width: 1200px;
+            width: 90%;
+            backdrop-filter: blur(10px); /* 容器整体的背景模糊，可选 */
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 卡片通用样式 */
+        .card {
+            background: rgba(255, 255, 255, 0.15); /* 半透明背景 */
+            backdrop-filter: blur(15px); /* 毛玻璃效果 */
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2); /* 轻微边框 */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            position: relative; /* 用于背景纹理 */
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+            color: #f0f0f0;
+        }
+
+        .card p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #e0e0e0;
+            margin-bottom: 0;
+        }
+
+        .card-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 特定卡片样式 - 时钟 */
+        #clock-card {
+            background: rgba(255, 255, 255, 0.25); /* 稍微更亮一点 */
+            min-height: 200px; /* 确保时钟卡片有足够高度 */
+            justify-content: center;
+            align-items: center;
+            display: flex; /* 让时钟内容居中 */
+            flex-direction: column;
+        }
+
+        #clock {
+            font-size: 3.5em;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+            margin-bottom: 10px;
+            display: block; /* 确保占一行 */
+        }
+        #date {
+            font-size: 1.2em;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+        }
+
+        /* 底部链接样式 */
+        .links a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 1.1em;
+            transition: color 0.3s ease;
+        }
+
+        .links a:hover {
+            color: #a7d9ff;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr; /* 小屏幕下卡片堆叠 */
+                padding: 20px;
+                width: 95%;
+            }
+            .card {
+                padding: 20px;
+            }
+            .card h2 {
+                font-size: 1.5em;
+            }
+            .card p {
+                font-size: 1em;
+            }
+            #clock {
+                font-size: 2.5em;
+            }
+            #date {
+                font-size: 1em;
+            }
+        }
+
+        /* 额外装饰：卡片背景纹理 */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGZpbGw9IiM5OUQ2RjQiIGQ9Ik0xMiAwSDB2MTJoMTJWMHoiLz48cGF0aCBmaWxsPSIjRkZEN0Y3IiBkPSJNMjQgMEgxMnYxMmgyNFYwSDI0ek0yNCAxMkgxMnYzNmgxMlYxMnpNNCAyNEgwdjEyaDRWMjR6TTEyIDI0SDB2MTJoMThWMjR6TTEyIDM2SDB2MTJoMThWMzZ6TTE2IDQ4SDB2MTJoMThWMDQ4em00IDBoLTQxMnYyNGgxMnYtMjR6TTI4IDQ4SDIwdjQ4aDg0VjQ4eiIvPjxwYXRoIGZpbGw9IiMwMEQ2RjQiIGQ9Ik0xMiAwSDB2MTJoMTJWMHoiLz48cGF0aCBmaWxsPSIjRkZEN0Y3IiBkPSJNMjQgMEgxMnYxMmgyNFYwSDI0ek0yNCAxMkgxMnYzNmgxMlYxMnpNNCAyNEgwdjEyaDRWMjR6TTEyIDI0SDB2MTJoMThWMjR6TTEyIDM2SDB2MTJoMThWMzZ6TTE2IDQ4SDB2MTJoMThWMDQ4em00IDBoLTQxMnYyNGgxMnYtMjR6TTI4IDQ4SDIwdjQ4aDg0VjQ4eiIvPjxwYXRoIGZpbGw9IiM2MTRCRjciIGQ9Ik02MCAyNEg0OHYxMmgyNHYtMTJoLTEyem0tMTYgMTJoLTQ4djEyaDQ4di0xMnpmLz48L2c+PC9zdmc+') no-repeat center center / cover; /* 一个简单的SVG纹理 */
+            opacity: 0.05; /* 纹理透明度 */
+            z-index: -1;
+            pointer-events: none; /* 防止遮挡内容 */
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-content">
+                <h2>Hello, I'm</h2>
+                <h1>Xist2024</h1>
+                <p>探索数字世界的无限可能</p>
+            </div>
+        </div>
+
+        <div class="card" id="clock-card">
+            <div class="card-content">
+                <span id="clock"></span>
+                <span id="date"></span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-content">
+                <h2>关于我</h2>
+                <p>一个热爱折腾电脑的数字探索者。</p>
+                <p>虽然不擅长编程，但对新技术充满好奇，享受学习和实践的乐趣。</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-content">
+                <h2>我的兴趣</h2>
+                <p>软件安装与配置、系统优化、网络搭建。</p>
+                <p>偶尔研究服务器、玩转各种应用，乐于解决问题。</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-content">
+                <h2>联系我</h2>
+                <p>如果你有有趣的折腾项目或问题，欢迎交流！</p>
+                <div class="links">
+                    <a href="mailto:your.email@example.com" target="_blank">邮件</a>
+                    <a href="#" target="_blank">微博</a>
+                    <a href="#" target="_blank">GitHub (未来可能)</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-content">
+                <h2>我的宣言</h2>
+                <p>“代码是魔法，而我是个魔术爱好者，虽然不会变，但喜欢看魔术师表演，更喜欢把魔术道具拆开研究！”</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // JavaScript 用于实时更新时钟
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            let seconds = now.getSeconds();
+
+            // 格式化时间，保证两位数
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+
+            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+
+            // 显示日期
+            const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+            document.getElementById('date').textContent = now.toLocaleDateString('zh-CN', options);
+        }
+
+        // 每秒更新一次时钟
+        setInterval(updateClock, 1000);
+
+        // 页面加载时立即更新一次时钟，避免初始空白
+        updateClock();
+    </script>
+</body>
+</html>
