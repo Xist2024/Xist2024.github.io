@@ -35,17 +35,61 @@ function updateClockAndUptime() {
     document.getElementById('uptime').textContent = uptimeString;
 }
 
+// --- 新增：通用通知框函数 ---
+let toastTimeout; // 用于存储通知框的定时器，以便清除
+function showToast(message, duration = 2000) { // duration 默认为2000毫秒（2秒）
+    const toast = document.getElementById('toast-notification');
+    if (!toast) {
+        console.error("Toast notification element not found!");
+        return;
+    }
+
+    // 确保旧的动画完成并重置状态
+    clearTimeout(toastTimeout); // 清除任何正在进行的定时器
+    toast.classList.remove('show'); // 移除 show 类，确保可以重新触发动画
+    toast.classList.remove('hide'); // 移除 hide 类，避免冲突
+    toast.style.top = '-80px'; // 立即将 toast 移到隐藏位置
+    toast.style.opacity = '0';
+    toast.style.visibility = 'hidden';
+
+
+    // 等待一小段时间，确保CSS过渡可以重新触发 (重要!)
+    // 尤其是在短时间内多次调用时
+    setTimeout(() => {
+        toast.textContent = message;
+        toast.classList.add('show'); // 添加 show 类，触发滑入动画
+
+        // 设置定时器，在 duration 毫秒后隐藏
+        toastTimeout = setTimeout(() => {
+            toast.classList.remove('show'); // 移除 show 类
+            toast.classList.add('hide'); // 添加 hide 类，触发滑出动画
+
+            // 等待滑出动画完成再完全隐藏元素
+            setTimeout(() => {
+                toast.style.visibility = 'hidden';
+            }, 500); // 这里的500ms应与CSS中的transition时间匹配 (top, opacity的过渡时间)
+
+        }, duration);
+    }, 50); // 稍微延迟一下，确保浏览器重绘，让CSS过渡生效
+}
+
+
+// --- 修改：copyToClipboard 函数使用 showToast ---
 async function copyToClipboard(content, itemType) {
     try {
         await navigator.clipboard.writeText(content);
-        alert(`${itemType} 已复制到剪贴板: ${content}`);
+        // 使用新的通知框替代 alert
+        showToast(`${itemType} 已复制！`);
+        // 你仍然可以保留console.log以便调试
+        console.log(`${itemType} 已复制到剪贴板: ${content}`);
     } catch (err) {
         console.error('复制失败: ', err);
-        alert(`复制 ${itemType} 失败。请手动复制: ${content}`);
+        showToast(`复制 ${itemType} 失败。请手动复制。`); // 复制失败也给出提示
     }
 }
 
-// --- 弹窗相关逻辑 ---
+
+// --- 弹窗相关逻辑 (保持不变) ---
 const popupContainer = document.getElementById('popup-container');
 let currentKeyListener = null; // 用于存储当前活动的键盘监听器
 
@@ -91,7 +135,7 @@ function closePopup() {
     setTimeout(() => { popupContainer.innerHTML = ''; }, 300); // 等待动画结束
 }
 
-// --- 搜索引擎弹窗逻辑 ---
+// --- 搜索引擎弹窗逻辑 (保持不变) ---
 function setupSearchEngine() {
     const searchHtml = `
         <div class="search-popup-content">
@@ -126,7 +170,7 @@ function setupSearchEngine() {
 }
 
 
-// --- 计算器逻辑 ---
+// --- 计算器逻辑 (保持不变) ---
 function setupCalculator() {
     const calculatorHtml = `
         <div id="calculator-inner-content">
