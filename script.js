@@ -322,7 +322,8 @@ document.addEventListener('DOMContentLoaded', () => {
         currentSongIndex = songIndex;
         const songFileName = songList[songIndex];
         songTitle.textContent = songFileName.replace(/\.m4a$/, '');
-        audioPlayer.src = `audio/${songFileName}`;
+        // 关键改动：将 'audio/' 前缀移除
+        audioPlayer.src = songFileName;
         audioPlayer.addEventListener('loadedmetadata', updateProgress, { once: true });
     }
 
