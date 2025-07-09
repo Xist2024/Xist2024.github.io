@@ -8,10 +8,39 @@
 </head>
 <body>
 
-    <div id="toast-notification" class="toast-notification"></div>
+    <div id="toast-notification"></div>
 
     <div class="site-header card-base">
         Xist2024 的个人网站
+    </div>
+
+    <div id="music-player-card" class="card-base">
+        <div id="song-title">正在加载音乐...</div>
+
+        <div class="progress-container">
+            <div id="progress-bar-container">
+                <div id="progress-bar"></div>
+            </div>
+            <div id="time-display">00:00 / 00:00</div>
+        </div>
+
+        <div class="player-controls">
+            <!-- 播放/暂停 和 下一首 -->
+            <div class="main-controls">
+                <button id="play-pause-btn" class="control-button">
+                    <img src="01.png" alt="Play/Pause">
+                </button>
+                <button id="next-btn" class="control-button">下一首</button>
+            </div>
+
+            <!-- v1.6 新增：音量控制区域 -->
+            <div class="volume-container">
+                <span id="volume-icon">🔊</span>
+                <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="1">
+            </div>
+        </div>
+
+        <audio id="audio-player"></audio>
     </div>
 
     <div class="clock-container card-base">
@@ -25,16 +54,13 @@
 
     <div class="contact-card card-base">
         <a href="https://github.com/Xist2024" target="_blank" class="contact-item">
-            <img src="github.png" alt="GitHub Icon">
-            <span>GitHub</span>
+            <img src="github.png" alt="GitHub Icon"><span>GitHub</span>
         </a>
-        <a href="tencent://message/?uin=3310088475&Site=Xist2024的网站&Menu=yes" class="contact-item">
-            <img src="qq.png" alt="QQ Icon">
-            <span>QQ</span>
+        <a href="#" class="contact-item" onclick="copyToClipboard('3310088475', 'QQ号')">
+            <img src="qq.png" alt="QQ Icon"><span>QQ</span>
         </a>
         <a href="#" class="contact-item" onclick="copyToClipboard('Xist_2024@outlook.com', '电子邮件地址')">
-            <img src="email.png" alt="Email Icon">
-            <span>Email</span>
+            <img src="email.png" alt="Email Icon"><span>Email</span>
         </a>
     </div>
 
@@ -55,8 +81,7 @@
         <a href="#" class="widget-item" onclick="setupCalculator()">计算器</a>
     </div>
 
-    <div id="popup-container">
-        </div>
+    <div id="popup-container"></div>
 
     <script src="script.js"></script>
 </body>
