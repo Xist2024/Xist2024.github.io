@@ -338,3 +338,379 @@ body {
     transform: scale(1.02);
 }
 
+/* 弹窗样式 */
+#popup-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0.3s, opacity 0.3s;
+}
+
+#popup-container.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+.popup-card {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    padding: 30px;
+    max-width: 90%;
+    max-height: 90%;
+    overflow-y: auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #f0f0f0;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+    animation: fadeInScale 0.3s ease-out;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.popup-card h2 {
+    margin-top: 0;
+    font-size: 2em;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.close-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 30px;
+    height: 30px;
+    background: url('x.png') no-repeat center center / contain;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.close-button:hover {
+    opacity: 1;
+}
+
+/* 计算器样式 */
+.calculator {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    width: 300px;
+    max-width: 100%;
+    padding: 10px;
+}
+
+#calculator-display {
+    grid-column: 1 / -1;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 15px;
+    font-size: 2.5em;
+    text-align: right;
+    color: #fff;
+    margin-bottom: 15px;
+    overflow: hidden;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+    height: 1.5em;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.calc-button {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 15px;
+    font-size: 1.5em;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.calc-button:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+}
+
+.calc-button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.clear-button { background: rgba(220, 80, 80, 0.4); }
+.clear-button:hover { background: rgba(220, 80, 80, 0.6); }
+.operator { background: rgba(200, 150, 80, 0.4); }
+.operator:hover { background: rgba(200, 150, 80, 0.6); }
+.function-button { background: rgba(150, 150, 150, 0.3); }
+.function-button:hover { background: rgba(150, 150, 150, 0.5); }
+.equals-button { background: rgba(80, 200, 80, 0.4); }
+.equals-button:hover { background: rgba(80, 200, 80, 0.6); }
+
+/* 搜索框弹窗样式 */
+.search-popup-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 300px;
+    max-width: 100%;
+}
+.search-popup-content input[type="text"] {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 1.1em;
+    box-sizing: border-box;
+    outline: none;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.4);
+    transition: background 0.2s, border-color 0.2s;
+}
+.search-popup-content input[type="text"]::placeholder { color: rgba(255, 255, 255, 0.6); }
+.search-popup-content input[type="text"]:focus {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+.search-popup-content button {
+    background: rgba(80, 150, 220, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 1.1em;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+.search-popup-content button:hover {
+    background: rgba(80, 150, 220, 0.6);
+    transform: translateY(-2px);
+}
+.search-popup-content button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+
+/* --- v1.1 新增：通知框样式 (Toast Notification) --- */
+#toast-notification {
+    /* 固定在屏幕顶部中央 */
+    position: fixed;
+    top: -100px; /* 初始状态，藏在屏幕上方 */
+    left: 50%;
+    transform: translateX(-50%);
+
+    /* 沿用你的毛玻璃设计，但用了代表“成功”的绿色调 */
+    background: rgba(46, 204, 113, 0.7); /* 成功的绿色，带70%透明度 */
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    
+    color: #fff;
+    padding: 12px 25px;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    
+    font-size: 1.1em;
+    font-weight: bold;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    
+    z-index: 9999; /* 确保它在所有元素之上 */
+    
+    /* 定义动画：当top或opacity变化时，平滑过渡0.5秒 */
+    transition: top 0.5s ease-in-out, opacity 0.5s ease-in-out;
+    
+    /* 默认完全隐藏 */
+    opacity: 0;
+    visibility: hidden;
+    
+    /* 确保文字不会太长而换行 */
+    white-space: nowrap;
+}
+
+/* 当JS给通知框添加 .show 类时触发，实现滑入效果 */
+#toast-notification.show {
+    top: 20px; /* 移动到屏幕内可见位置 */
+    opacity: 1;
+    visibility: visible;
+}
+
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .site-header { font-size: 1.8em; padding: 15px 20px; }
+    .clock-container { padding: 30px; }
+    #current-time { font-size: 3.5em; letter-spacing: 1px; }
+    #current-date { font-size: 1.4em; }
+    .uptime-display { font-size: 1.1em; }
+    .contact-card, .about-me-card, .widgets-card { padding: 20px; }
+    .contact-item img { width: 50px; height: 50px; }
+    .contact-item span { font-size: 1em; }
+    .about-me-card p { font-size: 1.1em; }
+    .about-me-card .github-link img { width: 35px; height: 35px; }
+    .about-me-card .github-link span { font-size: 1em; }
+    .widgets-card .widget-item { font-size: 1.1em; padding: 8px 12px; }
+    .popup-card { padding: 20px; }
+    .popup-card h2 { font-size: 1.8em; margin-bottom: 15px; }
+    .close-button { width: 25px; height: 25px; top: 10px; right: 10px; }
+    .calculator { width: 280px; }
+    #calculator-display { font-size: 2em; }
+    .calc-button { font-size: 1.3em; padding: 12px; }
+    .search-popup-content input[type="text"], .search-popup-content button { font-size: 1em; padding: 10px 12px; }
+}
+
+@media (max-width: 480px) {
+    .site-header { font-size: 1.5em; padding: 10px 15px; }
+    .clock-container { padding: 20px; }
+    #current-time { font-size: 2.5em; }
+    #current-date { font-size: 1.1em; }
+    .uptime-display { font-size: 0.9em; }
+    .contact-card, .about-me-card, .widgets-card { padding: 15px; }
+    .contact-item img { width: 40px; height: 40px; }
+    .contact-item span { font-size: 0.9em; }
+    .about-me-card p { font-size: 1em; }
+    .about-me-card .github-link img { width: 30px; height: 30px; }
+    .about-me-card .github-link span { font-size: 0.9em; }
+    .widgets-card .widget-item { font-size: 1em; padding: 6px 10px; }
+    .popup-card { padding: 15px; }
+    .popup-card h2 { font-size: 1.5em; margin-bottom: 10px; }
+    .close-button { width: 20px; height: 20px; top: 8px; right: 8px; }
+    .calculator { width: 250px; gap: 8px; }
+    #calculator-display { font-size: 1.8em; padding: 10px; }
+    .calc-button { font-size: 1.2em; padding: 10px; }
+    .search-popup-content input[type="text"], .search-popup-content button { font-size: 0.9em; padding: 8px 10px; }
+}
+#music-player-card {
+    max-width: 800px; /* 与标题栏宽度一致 */
+    padding: 20px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* 各元素之间的间距 */
+}
+
+#song-title {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #f0f0f0;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+    white-space: nowrap; /* 防止歌名过长换行 */
+    overflow: hidden;
+    text-overflow: ellipsis; /* 超出部分显示省略号 */
+}
+
+.progress-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+#progress-bar-container {
+    flex-grow: 1; /* 让进度条容器占据剩余空间 */
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    height: 10px;
+    cursor: pointer; /* 提示用户这里可以点击 */
+    overflow: hidden;
+}
+
+#progress-bar {
+    width: 0%; /* 初始宽度为0, JS会更新它 */
+    height: 100%;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    transition: width 0.1s linear; /* 让进度条更新更平滑 */
+}
+
+#time-display {
+    font-size: 1em;
+    font-family: 'Consolas', 'Courier New', monospace; /* 使用等宽字体，数字不会跳动 */
+    color: #e0e0e0;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+.player-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.control-button {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%; /* 圆形按钮 */
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    color: #fff;
+}
+
+.control-button:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.control-button:active {
+    transform: scale(0.95);
+}
+
+#play-pause-btn {
+    width: 60px;
+    height: 60px;
+}
+
+#play-pause-btn img {
+    width: 50%; /* 图标大小相对于按钮 */
+    height: 50%;
+    /* 当暂停时，我们可以用JS给它加一个类来改变样式 */
+    transition: transform 0.3s ease;
+}
+
+#play-pause-btn.playing img {
+    /* 播放时可以给图标一个微妙的旋转效果，假装在“播放” */
+    /* transform: rotate(360deg); */
+}
+
+
+#next-btn {
+    width: 100px;
+    height: 40px;
+    border-radius: 20px; /* 胶囊形状 */
+    font-size: 1em;
+    font-weight: bold;
+}
+
