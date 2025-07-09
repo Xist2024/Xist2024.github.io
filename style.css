@@ -1,0 +1,567 @@
+/* 全局样式 */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column; /* 垂直排列内容 */
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: #fff; /* 全局文字颜色，确保在深色背景上可见 */
+
+    /* 背景图片设置 */
+    background-image: url('bj.jpg'); /* 设置背景图片 */
+    background-size: cover; /* 确保背景图片覆盖整个视口 */
+    background-position: center; /* 图片居中显示 */
+    background-repeat: no-repeat; /* 不重复平铺图片 */
+
+    /* 叠加半透明黑色 */
+    background-color: rgba(0, 0, 0, 0.5); /* 黑色半透明层，50%透明度 */
+    background-blend-mode: overlay; /* 混合模式，使黑色层与图片混合 */
+
+    padding: 20px; /* 整体内边距 */
+    box-sizing: border-box; /* 边框盒模型 */
+    gap: 30px; /* 增加卡片之间的间距 */
+}
+
+/* 统一卡片基础样式 */
+.card-base {
+    background: rgba(255, 255, 255, 0.25); /* 统一的毛玻璃效果 */
+    backdrop-filter: blur(20px); /* 统一的模糊度 */
+    border-radius: 20px; /* 统一的圆角 */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* 统一的边框 */
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3); /* 统一的阴影 */
+    text-align: center;
+    width: 90%;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-base:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* 顶部标题样式 (继承card-base并进行特定调整) */
+.site-header {
+    max-width: 800px;
+    padding: 20px 30px;
+    font-size: 2.2em;
+    font-weight: bold;
+    color: #f0f0f0;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+}
+
+/* 时钟容器样式 (继承card-base并进行特定调整) */
+.clock-container {
+    max-width: 600px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#current-time {
+    font-size: 5em;
+    font-weight: bold;
+    letter-spacing: 3px;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+    line-height: 1.2;
+    white-space: nowrap; /* 防止换行 */
+}
+
+#current-date {
+    font-size: 1.8em;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+    margin-bottom: 20px;
+}
+
+.uptime-display {
+    font-size: 1.4em;
+    color: #e0e0e0;
+    line-height: 1.5;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.4);
+    word-break: break-all; /* 允许单词内部换行 */
+}
+.uptime-display span {
+    font-weight: bold;
+    color: #fff;
+}
+
+/* 联系方式卡片样式 (继承card-base并进行特定调整) */
+.contact-card {
+    max-width: 600px;
+    padding: 30px;
+    display: flex;
+    justify-content: space-around; /* 均匀分布子项 */
+    align-items: center;
+    flex-wrap: wrap; /* 允许换行 */
+    gap: 20px; /* 图标之间的间距 */
+}
+
+.contact-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none; /* 移除链接下划线 */
+    color: inherit; /* 继承父元素文字颜色 */
+    transition: transform 0.3s ease; /* 添加动画过渡 */
+    cursor: pointer; /* 提示可点击 */
+}
+
+.contact-item:hover {
+    transform: scale(1.1) translateY(-5px); /* 悬停放大和上移 */
+}
+
+.contact-item img {
+    width: 60px; /* 图标大小 */
+    height: 60px;
+    margin-bottom: 10px; /* 图片与文字间距 */
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5)); /* 给图标加点光晕 */
+}
+
+.contact-item span {
+    font-size: 1.1em;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.6);
+}
+
+/* 自我介绍卡片样式 (继承card-base并进行特定调整) */
+.about-me-card {
+    max-width: 600px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column; /* 垂直排列内容 */
+    gap: 20px; /* 段落和GitHub图标之间的间距 */
+    text-align: left; /* 自我介绍文本左对齐 */
+}
+
+.about-me-card p {
+    margin: 0; /* 移除默认段落外边距 */
+    font-size: 1.2em;
+    line-height: 1.6;
+    color: #e0e0e0;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.4);
+}
+
+.about-me-card .github-link {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* GitHub链接居中 */
+    text-decoration: none;
+    color: inherit;
+    margin-top: 15px; /* 与上方文本的间距 */
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.about-me-card .github-link:hover {
+    transform: scale(1.05) translateY(-3px);
+}
+
+.about-me-card .github-link img {
+    width: 40px; /* GitHub图标大小 */
+    height: 40px;
+    margin-right: 10px;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+}
+
+.about-me-card .github-link span {
+    font-size: 1.1em;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.6);
+}
+
+/* --- 小工具集合卡片样式 (继承card-base并进行特定调整) --- */
+.widgets-card {
+    max-width: 600px;
+    padding: 20px 30px 30px; /* 调整内边距，给标题留空间 */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    text-align: left; /* 内部项目左对齐 */
+}
+
+.widgets-card h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #f0f0f0;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+    text-align: center; /* 标题居中 */
+}
+
+.widgets-card .widget-item {
+    display: block; /* 确保每个项目独占一行 */
+    text-decoration: none;
+    color: #f0f0f0;
+    font-size: 1.3em;
+    font-weight: bold;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+    padding: 10px 15px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    transition: background 0.3s ease, transform 0.3s ease;
+    cursor: pointer;
+    text-align: center; /* 按钮文字居中 */
+}
+
+.widgets-card .widget-item:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.02);
+}
+
+/* --- 弹窗样式 --- */
+#popup-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* 半透明黑色背景遮罩 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* 确保在最上层 */
+    visibility: hidden; /* 默认隐藏 */
+    opacity: 0; /* 默认透明 */
+    transition: visibility 0.3s, opacity 0.3s;
+}
+
+#popup-container.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+.popup-card {
+    background: rgba(255, 255, 255, 0.25); /* 毛玻璃效果 */
+    backdrop-filter: blur(20px);
+    border-radius: 20px; /* 圆角 */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    padding: 30px;
+    max-width: 90%; /* 限制最大宽度 */
+    max-height: 90%; /* 限制最大高度 */
+    overflow-y: auto; /* 内容超出时可滚动 */
+    position: relative; /* 用于定位关闭按钮 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #f0f0f0;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+    animation: fadeInScale 0.3s ease-out; /* 弹窗出现动画 */
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.popup-card h2 {
+    margin-top: 0;
+    font-size: 2em;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.close-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 30px;
+    height: 30px;
+    background: url('x.png') no-repeat center center / contain;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.close-button:hover {
+    opacity: 1;
+}
+
+/* --- 计算器样式 --- */
+.calculator {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4列 */
+    gap: 10px;
+    width: 300px; /* 固定计算器宽度 */
+    max-width: 100%;
+    padding: 10px;
+}
+
+#calculator-display {
+    grid-column: 1 / -1; /* 跨越所有列 */
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 15px;
+    font-size: 2.5em;
+    text-align: right;
+    color: #fff;
+    margin-bottom: 15px;
+    overflow: hidden; /* 防止数字溢出 */
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+    height: 1.5em; /* 确保显示屏有足够高度 */
+    display: flex;
+    align-items: center; /* 垂直居中 */
+    justify-content: flex-end; /* 水平靠右 */
+}
+
+.calc-button {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 15px;
+    font-size: 1.5em;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: flex; /* 确保内容居中 */
+    justify-content: center;
+    align-items: center;
+}
+
+.calc-button:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+}
+
+.calc-button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* 修正 operator 和 clear-button 的颜色值，使其更接近图片 */
+.clear-button {
+    background: rgba(220, 80, 80, 0.4); /* 红色 */
+}
+.clear-button:hover {
+    background: rgba(220, 80, 80, 0.6);
+}
+
+.operator {
+    background: rgba(200, 150, 80, 0.4); /* 棕橙色 */
+}
+.operator:hover {
+    background: rgba(200, 150, 80, 0.6);
+}
+
+/* 针对特定功能的按钮样式 */
+.function-button { /* 用于 (), % */
+    background: rgba(150, 150, 150, 0.3); /* 较浅的灰色 */
+}
+.function-button:hover {
+    background: rgba(150, 150, 150, 0.5);
+}
+
+.equals-button {
+    background: rgba(80, 200, 80, 0.4); /* 绿色 */
+}
+.equals-button:hover {
+    background: rgba(80, 200, 80, 0.6);
+}
+
+/* --- 搜索框弹窗样式 --- */
+.search-popup-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 300px;
+    max-width: 100%;
+}
+.search-popup-content input[type="text"] {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 1.1em;
+    box-sizing: border-box; /* 确保内边距和边框不会增加宽度 */
+    outline: none; /* 移除焦点时的蓝色边框 */
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.4);
+    transition: background 0.2s, border-color 0.2s;
+}
+.search-popup-content input[type="text"]::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+.search-popup-content input[type="text"]:focus {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+.search-popup-content button {
+    background: rgba(80, 150, 220, 0.4); /* 蓝色 */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 1.1em;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+.search-popup-content button:hover {
+    background: rgba(80, 150, 220, 0.6);
+    transform: translateY(-2px);
+}
+.search-popup-content button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .site-header {
+        font-size: 1.8em;
+        padding: 15px 20px;
+    }
+    .clock-container {
+        padding: 30px;
+    }
+    #current-time {
+        font-size: 3.5em;
+        letter-spacing: 1px;
+    }
+    #current-date {
+        font-size: 1.4em;
+    }
+    .uptime-display {
+        font-size: 1.1em;
+    }
+    .contact-card, .about-me-card, .widgets-card {
+        padding: 20px;
+    }
+    .contact-item img {
+        width: 50px;
+        height: 50px;
+    }
+    .contact-item span {
+        font-size: 1em;
+    }
+    .about-me-card p {
+        font-size: 1.1em;
+    }
+    .about-me-card .github-link img {
+        width: 35px;
+        height: 35px;
+    }
+    .about-me-card .github-link span {
+        font-size: 1em;
+    }
+    .widgets-card .widget-item {
+        font-size: 1.1em;
+        padding: 8px 12px;
+    }
+    .popup-card {
+        padding: 20px;
+    }
+    .popup-card h2 {
+        font-size: 1.8em;
+        margin-bottom: 15px;
+    }
+    .close-button {
+        width: 25px;
+        height: 25px;
+        top: 10px;
+        right: 10px;
+    }
+    .calculator {
+        width: 280px;
+    }
+    #calculator-display {
+        font-size: 2em;
+    }
+    .calc-button {
+        font-size: 1.3em;
+        padding: 12px;
+    }
+    .search-popup-content input[type="text"], .search-popup-content button {
+        font-size: 1em;
+        padding: 10px 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .site-header {
+        font-size: 1.5em;
+        padding: 10px 15px;
+    }
+    .clock-container {
+        padding: 20px;
+    }
+    #current-time {
+        font-size: 2.5em;
+    }
+    #current-date {
+        font-size: 1.1em;
+    }
+    .uptime-display {
+        font-size: 0.9em;
+    }
+    .contact-card, .about-me-card, .widgets-card {
+        padding: 15px;
+    }
+    .contact-item img {
+        width: 40px;
+        height: 40px;
+    }
+    .contact-item span {
+        font-size: 0.9em;
+    }
+    .about-me-card p {
+        font-size: 1em;
+    }
+    .about-me-card .github-link img {
+        width: 30px;
+        height: 30px;
+    }
+    .about-me-card .github-link span {
+        font-size: 0.9em;
+    }
+    .widgets-card .widget-item {
+        font-size: 1em;
+        padding: 6px 10px;
+    }
+    .popup-card {
+        padding: 15px;
+    }
+    .popup-card h2 {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+    .close-button {
+        width: 20px;
+        height: 20px;
+        top: 8px;
+        right: 8px;
+    }
+    .calculator {
+        width: 250px;
+        gap: 8px;
+    }
+    #calculator-display {
+        font-size: 1.8em;
+        padding: 10px;
+    }
+    .calc-button {
+        font-size: 1.2em;
+        padding: 10px;
+    }
+    .search-popup-content input[type="text"], .search-popup-content button {
+        font-size: 0.9em;
+        padding: 8px 10px;
+    }
+}
