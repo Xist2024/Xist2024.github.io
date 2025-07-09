@@ -1,14 +1,28 @@
-// 设置网站建立的精确时间 (2025年7月9日 1:22:00)
+/**
+ * Xist2024 个人主页脚本
+ * 版本: v1.6 (终极版)
+ * 核心功能:
+ * 1. 动态时钟与网站运行时间
+ * 2. 可复用的顶部通知框 (Toast)
+ * 3. 剪贴板复制功能
+ * 4. 弹窗小工具框架 (计算器, 搜索引擎)
+ * 5. 内置歌单、带音量控制的稳定音乐播放器
+ *
+ * 由网页匠神 (xAI) 为 Xist2024 定制
+ * 最后更新日期: 2025-07-09
+ */
+
+// --- 页面全局初始化与时钟 ---
+
+// 设置网站建立的精确时间
 const websiteStartTime = new Date(2025, 6, 9, 1, 22, 0);
 
 function updateClockAndUptime() {
     const now = new Date();
-    let hours = now.getHours();
-    let minutes = now.getMinutes();
-    let seconds = now.getSeconds();
-    hours = hours < 10 ? '0' + hours : hours;
-    minutes = minutes < 10 ? '0' + minutes : minutes;
-    seconds = seconds < 10 ? '0' + seconds : seconds;
+    // 使用 padStart 确保时间数字总是两位数
+    let hours = now.getHours().toString().padStart(2, '0');
+    let minutes = now.getMinutes().toString().padStart(2, '0');
+    let seconds = now.getSeconds().toString().padStart(2, '0');
     document.getElementById('current-time').textContent = `${hours}:${minutes}:${seconds}`;
 
     const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
@@ -28,114 +42,87 @@ function updateClockAndUptime() {
     const secondsUptime = totalSeconds % 60;
 
     let uptimeString = '';
-    if (years > 0) {
-        uptimeString += `${years} 年 `;
-    }
+    if (years > 0) uptimeString += `${years} 年 `;
     uptimeString += `${days} 天 ${hoursUptime} 小时 ${minutesUptime} 分 ${secondsUptime} 秒`;
     document.getElementById('uptime').textContent = uptimeString;
 }
 
-// --- 新增：通用通知框函数 ---
-let toastTimeout; // 用于存储通知框的定时器，以便清除
-function showToast(message, duration = 2000) { // duration 默认为2000毫秒（2秒）
+// --- 通用工具函数 ---
+
+let toastTimeout;
+function showToast(message, duration = 2000) {
     const toast = document.getElementById('toast-notification');
     if (!toast) {
-        console.error("Toast notification element not found!");
+        console.error("网页匠神提示：HTML中缺少 id='toast-notification' 的元素！");
         return;
     }
-
-    // 确保旧的动画完成并重置状态
-    clearTimeout(toastTimeout); // 清除任何正在进行的定时器
-    toast.classList.remove('show'); // 移除 show 类，确保可以重新触发动画
-    toast.classList.remove('hide'); // 移除 hide 类，避免冲突
-    toast.style.top = '-80px'; // 立即将 toast 移到隐藏位置
-    toast.style.opacity = '0';
-    toast.style.visibility = 'hidden';
-
-
-    // 等待一小段时间，确保CSS过渡可以重新触发 (重要!)
-    // 尤其是在短时间内多次调用时
-    setTimeout(() => {
-        toast.textContent = message;
-        toast.classList.add('show'); // 添加 show 类，触发滑入动画
-
-        // 设置定时器，在 duration 毫秒后隐藏
-        toastTimeout = setTimeout(() => {
-            toast.classList.remove('show'); // 移除 show 类
-            toast.classList.add('hide'); // 添加 hide 类，触发滑出动画
-
-            // 等待滑出动画完成再完全隐藏元素
-            setTimeout(() => {
-                toast.style.visibility = 'hidden';
-            }, 500); // 这里的500ms应与CSS中的transition时间匹配 (top, opacity的过渡时间)
-
-        }, duration);
-    }, 50); // 稍微延迟一下，确保浏览器重绘，让CSS过渡生效
+    clearTimeout(toastTimeout);
+    toast.textContent = message;
+    toast.classList.remove('show');
+    setTimeout(() => { toast.classList.add('show'); }, 10);
+    toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, duration);
 }
 
-
-// --- 修改：copyToClipboard 函数使用 showToast ---
 async function copyToClipboard(content, itemType) {
-    try {
-        await navigator.clipboard.writeText(content);
-        // 使用新的通知框替代 alert
-        showToast(`${itemType} 已复制！`);
-        // 你仍然可以保留console.log以便调试
-        console.log(`${itemType} 已复制到剪贴板: ${content}`);
-    } catch (err) {
-        console.error('复制失败: ', err);
-        showToast(`复制 ${itemType} 失败。请手动复制。`); // 复制失败也给出提示
+    if (navigator.clipboard && window.isSecureContext) {
+        try {
+            await navigator.clipboard.writeText(content);
+            showToast(`${itemType} 已成功复制！`);
+        } catch (err) {
+            console.error('复制失败: ', err);
+            showToast(`复制失败，浏览器可能不支持。`, 3000);
+        }
+    } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = content;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-9999px";
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            showToast(`${itemType} 已成功复制！`);
+        } catch (err) {
+            console.error('备用复制方法失败: ', err);
+            showToast(`复制失败，请尝试手动复制。`, 3000);
+        }
+        document.body.removeChild(textArea);
     }
 }
 
+// --- 弹窗小工具框架 ---
 
-// --- 弹窗相关逻辑 (保持不变) ---
 const popupContainer = document.getElementById('popup-container');
-let currentKeyListener = null; // 用于存储当前活动的键盘监听器
+let currentKeyListener = null;
 
-// 创建通用弹窗函数
 function createPopup(title, contentHtml, specificClass = '') {
-    // 在打开新弹窗前，移除旧的键盘监听器
     if (currentKeyListener) {
         document.removeEventListener('keydown', currentKeyListener);
         currentKeyListener = null;
     }
-
-    popupContainer.innerHTML = ''; // 清空现有弹窗内容
+    popupContainer.innerHTML = '';
     const popupCard = document.createElement('div');
-    popupCard.className = 'popup-card ' + specificClass; // 允许添加特定类
-
-    const closeButton = document.createElement('button');
-    closeButton.className = 'close-button';
-    closeButton.onclick = closePopup;
-
-    const popupTitle = document.createElement('h2');
-    popupTitle.textContent = title;
-
-    const popupContent = document.createElement('div');
-    popupContent.innerHTML = contentHtml;
-    popupContent.style.textAlign = 'center'; // 确保内容居中，如果需要
-
-    popupCard.appendChild(closeButton);
-    popupCard.appendChild(popupTitle);
-    popupCard.appendChild(popupContent);
+    popupCard.className = 'popup-card ' + specificClass;
+    popupCard.innerHTML = `
+        <button class="close-button" onclick="closePopup()"></button>
+        <h2>${title}</h2>
+        <div>${contentHtml}</div>
+    `;
     popupContainer.appendChild(popupCard);
     popupContainer.classList.add('show');
 }
 
-// 关闭弹窗函数
 function closePopup() {
     popupContainer.classList.remove('show');
-    // 移除当前活动的键盘监听器
     if (currentKeyListener) {
         document.removeEventListener('keydown', currentKeyListener);
         currentKeyListener = null;
     }
-    // 清空内容，防止下次打开时闪烁旧内容
-    setTimeout(() => { popupContainer.innerHTML = ''; }, 300); // 等待动画结束
+    setTimeout(() => { popupContainer.innerHTML = ''; }, 300);
 }
 
-// --- 搜索引擎弹窗逻辑 (保持不变) ---
+// --- 小工具定义 ---
+
 function setupSearchEngine() {
     const searchHtml = `
         <div class="search-popup-content">
@@ -144,10 +131,8 @@ function setupSearchEngine() {
         </div>
     `;
     createPopup('必应搜索', searchHtml);
-
     const searchInput = document.getElementById('search-input');
     const searchButton = document.getElementById('search-button');
-
     const performSearch = () => {
         const query = searchInput.value.trim();
         if (query) {
@@ -155,237 +140,273 @@ function setupSearchEngine() {
             closePopup();
         }
     };
-
     searchButton.addEventListener('click', performSearch);
-    // 为搜索框添加键盘事件监听器
     currentKeyListener = (e) => {
-        if (e.key === 'Enter') {
-            performSearch();
-        }
+        if (e.key === 'Enter') performSearch();
+        if (e.key === 'Escape') closePopup();
     };
     document.addEventListener('keydown', currentKeyListener);
-
-    // 聚焦输入框
     searchInput.focus();
 }
 
-
-// --- 计算器逻辑 (保持不变) ---
 function setupCalculator() {
     const calculatorHtml = `
         <div id="calculator-inner-content">
             <div class="calculator">
                 <div id="calculator-display">0</div>
-
-                <button class="calc-button clear-button" data-value="C">C</button>
-                <button class="calc-button function-button" data-value="(">(</button>
-                <button class="calc-button function-button" data-value="%)">%</button>
-                <button class="calc-button operator" data-value="/">&divide;</button>
-
-                <button class="calc-button" data-value="7">7</button>
-                <button class="calc-button" data-value="8">8</button>
-                <button class="calc-button" data-value="9">9</button>
-                <button class="calc-button operator" data-value="*">&times;</button>
-
-                <button class="calc-button" data-value="4">4</button>
-                <button class="calc-button" data-value="5">5</button>
-                <button class="calc-button" data-value="6">6</button>
-                <button class="calc-button operator" data-value="-">-</button>
-
-                <button class="calc-button" data-value="1">1</button>
-                <button class="calc-button" data-value="2">2</button>
-                <button class="calc-button" data-value="3">3</button>
-                <button class="calc-button operator" data-value="+">+</button>
-
-                <button class="calc-button function-button" data-value="+/-">+/-</button>
-                <button class="calc-button" data-value="0">0</button>
-                <button class="calc-button" data-value=".">.</button>
-                <button class="calc-button equals-button" data-value="=">=</button>
+                <button class="calc-button clear-button" data-value="C">C</button><button class="calc-button function-button" data-value="(">(</button><button class="calc-button function-button" data-value=")">)</button><button class="calc-button operator" data-value="/">÷</button>
+                <button class="calc-button" data-value="7">7</button><button class="calc-button" data-value="8">8</button><button class="calc-button" data-value="9">9</button><button class="calc-button operator" data-value="*">×</button>
+                <button class="calc-button" data-value="4">4</button><button class="calc-button" data-value="5">5</button><button class="calc-button" data-value="6">6</button><button class="calc-button operator" data-value="-">-</button>
+                <button class="calc-button" data-value="1">1</button><button class="calc-button" data-value="2">2</button><button class="calc-button" data-value="3">3</button><button class="calc-button operator" data-value="+">+</button>
+                <button class="calc-button function-button" data-value="%">%</button><button class="calc-button" data-value="0">0</button><button class="calc-button" data-value=".">.</button><button class="calc-button equals-button" data-value="=">=</button>
             </div>
         </div>
     `;
-    // 给弹窗添加一个特定的类，方便后续选择内部元素
     createPopup('计算器', calculatorHtml, 'calculator-popup');
-
-    // 确保在DOM中找到计算器元素
     const calculatorContent = document.querySelector('.popup-card.calculator-popup .calculator');
-    if (!calculatorContent) {
-        console.error("Calculator content not found after creating popup.");
-        return; // 如果没找到，就停止执行
-    }
-
+    if (!calculatorContent) return;
     const display = calculatorContent.querySelector('#calculator-display');
-    let currentExpression = ''; // 用于存储完整的表达式
-    let lastIsOperator = false; // 判断上一个输入是否为操作符
-    let lastIsEquals = false; // 判断上一个是否是等号
-
-    // 键盘事件监听器，用于计算器
-    currentKeyListener = (e) => {
-        const key = e.key;
-        let buttonValue = '';
-
-        if (key >= '0' && key <= '9') {
-            buttonValue = key;
-        } else if (key === '.') {
-            buttonValue = '.';
-        } else if (key === '+') {
-            buttonValue = '+';
-        } else if (key === '-') {
-            buttonValue = '-';
-        } else if (key === '*') {
-            buttonValue = '*';
-        } else if (key === '/') {
-            buttonValue = '/';
-        } else if (key === 'Enter') {
-            buttonValue = '=';
-            e.preventDefault(); // 防止回车键触发其他默认行为，如表单提交
-        } else if (key === 'Backspace') {
-            // 实现退格键功能
-            if (currentExpression.length > 0) {
-                currentExpression = currentExpression.slice(0, -1);
-                display.textContent = currentExpression || '0';
-                lastIsOperator = ['+', '-', '*', '/'].includes(currentExpression.slice(-1));
-                lastIsEquals = false;
-            }
-            e.preventDefault();
-            return;
-        } else if (key === 'Escape') {
-            closePopup(); // Esc键关闭弹窗
-            return;
-        } else if (key.toLowerCase() === 'c') {
-            buttonValue = 'C';
+    let currentExpression = '';
+    let lastIsEquals = false;
+    calculatorContent.addEventListener('click', (e) => {
+        if (e.target.matches('.calc-button')) {
+            handleInput(e.target.dataset.value);
         }
-
-
-        // 模拟点击对应的按钮
-        if (buttonValue) {
-            const simulatedButton = calculatorContent.querySelector(`.calc-button[data-value="${buttonValue}"]`);
-            if (simulatedButton) {
-                simulatedButton.click();
-            }
+    });
+    currentKeyListener = (e) => {
+        e.preventDefault();
+        let key = e.key;
+        if (key === 'Enter') key = '=';
+        if (key === 'Backspace') key = 'C';
+        if (key === ',') key = '.';
+        const button = calculatorContent.querySelector(`.calc-button[data-value="${key}"]`);
+        if (button) {
+            handleInput(key);
+            button.style.transform = 'scale(0.95)';
+            setTimeout(() => button.style.transform = '', 100);
+        } else if (e.key === 'Escape') {
+            closePopup();
         }
     };
     document.addEventListener('keydown', currentKeyListener);
-
-    calculatorContent.querySelectorAll('.calc-button').forEach(button => {
-        button.addEventListener('click', () => {
-            const value = button.dataset.value;
-
-            if (value === 'C') {
-                currentExpression = '';
-                display.textContent = '0';
-                lastIsOperator = false;
-                lastIsEquals = false;
-                return;
-            }
-
-            if (value === '=') {
-                try {
-                    // 检查表达式是否为空或者以运算符结尾
-                    if (currentExpression === '' || lastIsOperator) {
-                        display.textContent = 'Error';
-                        currentExpression = '';
-                        return;
-                    }
-
-                    let result = eval(currentExpression.replace(/×/g, '*').replace(/÷/g, '/'));
-                    if (result % 1 !== 0) {
-                        result = parseFloat(result.toFixed(8));
-                    }
-                    display.textContent = result;
-                    currentExpression = String(result);
-                    lastIsEquals = true;
-                } catch (e) {
-                    display.textContent = 'Error';
-                    currentExpression = '';
-                }
-                lastIsOperator = false;
-                return;
-            }
-
-            if (['+', '-', '*', '/'].includes(value)) {
-                if (lastIsOperator && currentExpression.length > 0) {
-                    currentExpression = currentExpression.slice(0, -1) + value;
-                } else if (currentExpression === '' && value === '-') {
-                    currentExpression += value; // 允许以负号开始
-                } else if (currentExpression !== '' || display.textContent !== '0') {
-                    currentExpression += value;
-                } else if (currentExpression === '' && display.textContent === '0' && value === '-') {
-                    currentExpression = value; // 允许从0开始的负数
-                }
-                lastIsOperator = true;
-                lastIsEquals = false;
-            } else if (value === '+/-') {
-                if (currentExpression !== '' && display.textContent !== 'Error') {
-                    let parts = currentExpression.split(/([\+\-\*\/])/);
-                    let lastPart = parts.pop();
-                    let num = parseFloat(lastPart);
-                    if (!isNaN(num)) {
-                        const newNum = -num;
-                        currentExpression = parts.join('') + String(newNum);
-                        display.textContent = newNum;
-                    }
-                } else if (currentExpression === '') { // 如果是0，直接变-0
-                     currentExpression = '-0';
-                     display.textContent = '-0';
-                }
-                lastIsOperator = false;
-                lastIsEquals = false;
-            } else if (value === '%') {
-                if (currentExpression !== '' && display.textContent !== 'Error') {
-                    let parts = currentExpression.split(/([\+\-\*\/])/);
-                    let lastPart = parts.pop();
-                    let num = parseFloat(lastPart);
-                    if (!isNaN(num)) {
-                        const newNum = num / 100;
-                        currentExpression = parts.join('') + String(newNum);
-                        display.textContent = newNum;
-                    }
-                }
-                lastIsOperator = false;
-                lastIsEquals = false;
-            } else if (value === '(' || value === ')') {
-                 currentExpression += value;
-                 lastIsOperator = false;
-                 lastIsEquals = false;
-            } else if (value === '.') {
-                const lastPart = currentExpression.split(/[\+\-\*\/()]/).pop(); // 分割时也考虑括号
-                if (lastPart.includes('.')) {
-                    return;
-                }
-                if (lastIsOperator || lastIsEquals || currentExpression === '' || currentExpression.endsWith('(')) {
-                     currentExpression += '0.';
-                } else {
-                    currentExpression += '.';
-                }
-                lastIsOperator = false;
-                lastIsEquals = false;
-            } else { // 数字
-                if (lastIsEquals) {
-                    currentExpression = value;
-                } else if (lastIsOperator) {
-                    currentExpression += value;
-                } else {
-                    if (display.textContent === '0' && currentExpression === '0' && value !== '.') { // 防止多个0
-                        currentExpression = value;
-                    } else {
-                        currentExpression += value;
-                    }
-                }
-                lastIsOperator = false;
-                lastIsEquals = false;
-            }
-
-            // 更新显示屏内容
-            // 显示当前输入或表达式的最后部分
-            const displayableExpression = currentExpression.replace(/\*/g, '×').replace(/\//g, '÷');
-            display.textContent = displayableExpression || '0';
-        });
-    });
+    function handleInput(value) {
+        const isOperator = ['+', '-', '*', '/'].includes(value);
+        if (value === 'C') { currentExpression = ''; display.textContent = '0'; lastIsEquals = false; return; }
+        if (value === '=') {
+            if (currentExpression === '' || ['+', '-', '*', '/', '.'].includes(currentExpression.slice(-1))) return;
+            try {
+                let evalExpression = currentExpression.replace(/%/g, '/100');
+                let result = new Function('return ' + evalExpression)();
+                if (!isFinite(result)) throw new Error("Result is not finite");
+                result = parseFloat(result.toFixed(10));
+                display.textContent = result;
+                currentExpression = String(result);
+                lastIsEquals = true;
+            } catch (error) { display.textContent = 'Error'; currentExpression = ''; lastIsEquals = false; console.error("计算错误:", error); }
+            return;
+        }
+        if (lastIsEquals && !isOperator && value !== '.') { currentExpression = ''; }
+        lastIsEquals = false;
+        if (display.textContent === '0' && !isOperator && value !== '.') { currentExpression = value; }
+        else if (display.textContent === 'Error') { currentExpression = value; }
+        else {
+            if (isOperator && ['+', '-', '*', '/'].includes(currentExpression.slice(-1))) { currentExpression = currentExpression.slice(0, -1) + value; }
+            else { currentExpression += value; }
+        }
+        display.textContent = currentExpression.replace(/\*/g, '×').replace(/\//g, '÷');
+    }
 }
+
+
+// --- v1.6 音乐播放器逻辑 (带音量控制，终极稳定版) ---
+document.addEventListener('DOMContentLoaded', () => {
+
+    // 内置歌单，确保100%可靠加载
+    const songList = [
+        "Croatian_Rhapsody.m4a",
+        "Fish_in_the_pool.m4a",
+        "Journey.m4a",
+        "My_soul.m4a",
+        "Time_to_love.m4a",
+        "Nocturne5.m4a"
+    ];
+
+    // 将所有DOM元素获取集中在一起，方便管理
+    const audioPlayer = document.getElementById('audio-player');
+    const songTitle = document.getElementById('song-title');
+    const playPauseBtn = document.getElementById('play-pause-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const progressBarContainer = document.getElementById('progress-bar-container');
+    const progressBar = document.getElementById('progress-bar');
+    const timeDisplay = document.getElementById('time-display');
+    const volumeIcon = document.getElementById('volume-icon');
+    const volumeSlider = document.getElementById('volume-slider');
+
+    // 播放器状态变量
+    let currentSongIndex = -1;
+    let isPlaying = false;
+    let isAudioUnlocked = false;
+
+    // 初始化函数
+    function initializePlayer() {
+        if (songList.length === 0) {
+            songTitle.textContent = "歌曲列表为空";
+            return;
+        }
+        setupPlayerEvents();
+        loadInitialSong();
+        // 设置初始音量
+        audioPlayer.volume = volumeSlider.value;
+        updateVolumeIcon();
+    }
+
+    // 事件绑定函数
+    function setupPlayerEvents() {
+        playPauseBtn.addEventListener('click', playPauseToggle);
+        nextBtn.addEventListener('click', () => playNextSong(true));
+        audioPlayer.addEventListener('timeupdate', updateProgress);
+        audioPlayer.addEventListener('ended', () => playNextSong(true));
+        progressBarContainer.addEventListener('click', setProgress);
+        volumeSlider.addEventListener('input', handleVolumeChange);
+        volumeIcon.addEventListener('click', toggleMute);
+    }
+
+    function loadInitialSong() {
+        playNextSong(false); // 页面加载，只加载，不播放
+    }
+
+    // 音频上下文与解锁
+    function unlockAudioContext() {
+        if (isAudioUnlocked) return;
+        // 这是解决“没声音”最可靠的方式
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioContext.state === 'suspended') {
+            audioContext.resume();
+        }
+        // 将audio元素连接到扬声器
+        const source = audioContext.createMediaElementSource(audioPlayer);
+        source.connect(audioContext.destination);
+        isAudioUnlocked = true;
+        console.log("音频上下文已成功激活并连接！");
+    }
+
+    // 核心播放逻辑
+    function playSong() {
+        unlockAudioContext(); // 每次播放前都确保上下文已激活
+        isPlaying = true;
+        playPauseBtn.classList.add('playing');
+        const playPromise = audioPlayer.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                console.error("播放失败:", error);
+                pauseSong();
+            });
+        }
+    }
+
+    function pauseSong() {
+        isPlaying = false;
+        playPauseBtn.classList.remove('playing');
+        audioPlayer.pause();
+    }
+
+    function playPauseToggle() {
+        if (isPlaying) {
+            pauseSong();
+        } else {
+            playSong();
+        }
+    }
+
+    function loadSong(songIndex) {
+        currentSongIndex = songIndex;
+        const songFileName = songList[songIndex];
+        songTitle.textContent = songFileName.replace(/\.m4a$/, '');
+        audioPlayer.src = `audio/${songFileName}`;
+        audioPlayer.addEventListener('loadedmetadata', updateProgress, { once: true });
+    }
+
+    function playNextSong(shouldPlay = false) {
+        if (songList.length === 0) return;
+        let newIndex;
+        if (songList.length <= 1) {
+            newIndex = 0;
+        } else {
+            do {
+                newIndex = Math.floor(Math.random() * songList.length);
+            } while (newIndex === currentSongIndex);
+        }
+        loadSong(newIndex);
+        if (shouldPlay) {
+            playSong();
+        }
+    }
+
+    // 进度与时间格式化
+    function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function updateProgress() {
+        if (audioPlayer.duration) {
+            const progressPercent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+            progressBar.style.width = `${progressPercent}%`;
+            timeDisplay.textContent = `${formatTime(audioPlayer.currentTime)} / ${formatTime(audioPlayer.duration)}`;
+        }
+    }
+
+    function setProgress(e) {
+        const width = progressBarContainer.clientWidth;
+        const clickX = e.offsetX;
+        const duration = audioPlayer.duration;
+        if (duration) {
+            audioPlayer.currentTime = (clickX / width) * duration;
+        }
+    }
+
+    // 音量控制逻辑
+    function handleVolumeChange() {
+        audioPlayer.volume = this.value;
+        if (audioPlayer.muted) {
+            audioPlayer.muted = false;
+        }
+        updateVolumeIcon();
+    }
+
+    function toggleMute() {
+        audioPlayer.muted = !audioPlayer.muted;
+        updateVolumeIcon();
+    }
+
+    function updateVolumeIcon() {
+        if (audioPlayer.muted || audioPlayer.volume === 0) {
+            volumeIcon.textContent = '🔇';
+            // 如果是因为音量为0而静音，则同步滑块位置
+            if(!audioPlayer.muted) volumeSlider.value = 0;
+        } else if (audioPlayer.volume < 0.5) {
+            volumeIcon.textContent = '🔉';
+        } else {
+            volumeIcon.textContent = '🔊';
+        }
+        // 如果取消静音且音量为0，则恢复一个默认音量
+        if (!audioPlayer.muted && audioPlayer.volume === 0) {
+            audioPlayer.volume = 0.5;
+            volumeSlider.value = 0.5;
+            volumeIcon.textContent = '🔉';
+        }
+    }
+
+    // 启动播放器
+    initializePlayer();
+});
+
+
+// --- 页面全局心跳 ---
 
 // 每1秒更新一次时钟和运行时间
 setInterval(updateClockAndUptime, 1000);
 
 // 页面加载时立即更新一次，避免初始空白
-updateClockAndUptime();
+document.addEventListener('DOMContentLoaded', updateClockAndUptime);
