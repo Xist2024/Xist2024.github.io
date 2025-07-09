@@ -565,3 +565,42 @@ body {
         padding: 8px 10px;
     }
 }
+
+/* --- 新增的通知框样式 --- */
+.toast-notification {
+    position: fixed; /* 固定定位 */
+    top: -80px; /* 默认隐藏在顶部之外 */
+    left: 50%; /* 水平居中 */
+    transform: translateX(-50%); /* 确保精确居中 */
+    background: rgba(0, 0, 0, 0.7); /* 半透明深色背景 */
+    color: #fff; /* 白色文字 */
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    z-index: 2000; /* 确保在所有内容之上 */
+    opacity: 0; /* 默认透明 */
+    visibility: hidden; /* 默认隐藏 */
+    transition: top 0.5s ease-out, opacity 0.5s ease-out, visibility 0.5s; /* 动画过渡 */
+    text-align: center;
+    font-size: 1.2em;
+    min-width: 250px; /* 最小宽度 */
+    max-width: 90%; /* 最大宽度，适应小屏幕 */
+}
+
+.toast-notification.show {
+    top: 20px; /* 显示时滑入到距离顶部20px的位置 */
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 手机端优化 */
+@media (max-width: 480px) {
+    .toast-notification {
+        padding: 12px 20px;
+        font-size: 1em;
+        top: -70px; /* 调整手机端的默认隐藏位置 */
+    }
+    .toast-notification.show {
+        top: 15px; /* 手机端显示位置 */
+    }
+}
