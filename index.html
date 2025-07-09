@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xist2024 的个人主页</title>
+    <title>Xist2024的主页</title>
     <style>
         /* 全局样式 */
         body {
             margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
+            flex-direction: column; /* 垂直排列内容 */
             justify-content: center;
             align-items: center;
             min-height: 100vh;
@@ -17,6 +18,8 @@
             overflow: hidden; /* 防止渐变超出视口产生滚动条 */
             background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); /* 渐变背景 */
             animation: gradientAnimation 10s ease infinite alternate; /* 渐变动画 */
+            padding: 20px; /* 整体内边距 */
+            box-sizing: border-box; /* 边框盒模型 */
         }
 
         @keyframes gradientAnimation {
@@ -24,218 +27,217 @@
             100% { background-position: 100% 50%; }
         }
 
-        /* 容器样式 */
-        .container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* 响应式网格布局 */
-            gap: 25px; /* 卡片间距 */
-            padding: 30px;
-            max-width: 1200px;
-            width: 90%;
-            backdrop-filter: blur(10px); /* 容器整体的背景模糊，可选 */
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        /* 卡片通用样式 */
-        .card {
-            background: rgba(255, 255, 255, 0.15); /* 半透明背景 */
-            backdrop-filter: blur(15px); /* 毛玻璃效果 */
+        /* 顶部标题样式 */
+        .site-header {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
             border-radius: 15px;
-            padding: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.2); /* 轻微边框 */
+            border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            padding: 20px 30px;
+            margin-bottom: 30px; /* 与下方时钟的间距 */
             text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            overflow: hidden;
-            position: relative; /* 用于背景纹理 */
-        }
-
-        .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
-        }
-
-        .card h2 {
-            margin-top: 0;
-            margin-bottom: 15px;
-            font-size: 1.8em;
-            color: #f0f0f0;
-        }
-
-        .card p {
-            font-size: 1.1em;
-            line-height: 1.6;
-            color: #e0e0e0;
-            margin-bottom: 0;
-        }
-
-        .card-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* 特定卡片样式 - 时钟 */
-        #clock-card {
-            background: rgba(255, 255, 255, 0.25); /* 稍微更亮一点 */
-            min-height: 200px; /* 确保时钟卡片有足够高度 */
-            justify-content: center;
-            align-items: center;
-            display: flex; /* 让时钟内容居中 */
-            flex-direction: column;
-        }
-
-        #clock {
-            font-size: 3.5em;
+            font-size: 2.2em;
             font-weight: bold;
-            letter-spacing: 2px;
+            color: #f0f0f0;
+            max-width: 800px;
+            width: 90%;
+            position: relative;
+            overflow: hidden;
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
-            margin-bottom: 10px;
-            display: block; /* 确保占一行 */
         }
-        #date {
-            font-size: 1.2em;
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
-        }
-
-        /* 底部链接样式 */
-        .links a {
-            color: #fff;
-            text-decoration: none;
-            margin: 0 10px;
-            font-size: 1.1em;
-            transition: color 0.3s ease;
-        }
-
-        .links a:hover {
-            color: #a7d9ff;
-        }
-
-        /* 响应式调整 */
-        @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr; /* 小屏幕下卡片堆叠 */
-                padding: 20px;
-                width: 95%;
-            }
-            .card {
-                padding: 20px;
-            }
-            .card h2 {
-                font-size: 1.5em;
-            }
-            .card p {
-                font-size: 1em;
-            }
-            #clock {
-                font-size: 2.5em;
-            }
-            #date {
-                font-size: 1em;
-            }
-        }
-
-        /* 额外装饰：卡片背景纹理 */
-        .card::before {
+        .site-header::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGZpbGw9IiM5OUQ2RjQiIGQ9Ik0xMiAwSDB2MTJoMTJWMHoiLz48cGF0aCBmaWxsPSIjRkZEN0Y3IiBkPSJNMjQgMEgxMnYxMmgyNFYwSDI0ek0yNCAxMkgxMnYzNmgxMlYxMnpNNCAyNEgwdjEyaDRWMjR6TTEyIDI0SDB2MTJoMThWMjR6TTEyIDM2SDB2MTJoMThWMzZ6TTE2IDQ4SDB2MTJoMThWMDQ4em00IDBoLTQxMnYyNGgxMnYtMjR6TTI4IDQ4SDIwdjQ4aDg0VjQ4eiIvPjxwYXRoIGZpbGw9IiMwMEQ2RjQiIGQ9Ik0xMiAwSDB2MTJoMTJWMHoiLz48cGF0aCBmaWxsPSIjRkZEN0Y3IiBkPSJNMjQgMEgxMnYxMmgyNFYwSDI0ek0yNCAxMkgxMnYzNmgxMlYxMnpNNCAyNEgwdjEyaDRWMjR6TTEyIDI0SDB2MTJoMThWMjR6TTEyIDM2SDB2MTJoMThWMzZ6TTE2IDQ4SDB2MTJoMThWMDQ4em00IDBoLTQxMnYyNGgxMnYtMjR6TTI4IDQ4SDIwdjQ4aDg0VjQ4eiIvPjxwYXRoIGZpbGw9IiM2MTRCRjciIGQ9Ik02MCAyNEg0OHYxMmgyNHYtMTJoLTEyem0tMTYgMTJoLTQ4djEyaDQ4di0xMnpmLz48L2c+PC9zdmc+') no-repeat center center / cover; /* 一个简单的SVG纹理 */
-            opacity: 0.05; /* 纹理透明度 */
+            background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGZpbGw9IiM5OUQ2RjQiIGQ9MTAwHw0IDZfNzE2LCA3MV8yNzczLCAxXzg5MjcsIDExXzgyNjQgNF84Nzc2LDYxfDg1MiwxOV84OTYyNzUuMzMzfCBfMjYzX3g0MjJfMjcxXzIyNi40NjUyMV8yNy4yNjE2ODMsMjExXzE2NF8xMzkuOTAxMDIsNjcuMDc3NzU1LDc2XzQ5XzM1LjAzMTc3NCwxOS44MDQ0MzIsMjBfMjJfMTkuMzkxNDk4LDEyLjA1ODA2MywyOV8zMV8yOC40NTY2NzcsMTcuMTg1MDQ0LDQzXzQ2XzQyLjM3MDc2MSwyNS42NjUwMDksNTVfNTlfNTcuNzg5MDUxLDM0LjgzNjc2MSw2MV82NV82MC41NTEwMzMsMzUuNTg5MjM0LDY5XzcyXzY4LjI3OTY3OSwzOS45OTc3MzksNzdfODFfNzUuNTQ1NjkzLDQ0LjM5NzM3NCw4Nl84OV84My43NTk5MTYsNDguODAyMDE2Lzk2Xzk5Xzk0LjUyMTU5MSw1My4yMDY4OTgsMTA2XzEwOV8xMDMuMzUzOTgsNTcuNjE5MTc4LzExNl8xMTlfMTEyLjU1ODgyLDYyLjA0NzYzMiwxMjdfMTMwXzEyMS42NTI4NzYsNjYuNDg4OTM5LDEzOF8xNDFfMTMwLjc2NDExLDcxLjAyMzE5LDE0OF8xNTFfMTM5Ljg3MjM2OCw3NS40NjQ5MDYsMTU5XzE2Ml8xNDguOTc5OTgsNzkuOTA0MTE4LDE3MV8xNzRfMTYwLjk4MzU2Miw4NC4zNDAyMTYsMTgxXzE4NF8xNzMuOTg1NDUzLDg4Ljc2OTQyNCwxOTFfMTk0XzE4NC45ODQ3OTgsOTMuMjA0MjU4LDIwMVfMjA0XzE5My45ODE5NjMsOTcuNjQ0MjkxLDIxMV8yMTNfMjAzLjQ3NTIxLDEwMi4wOTMyMTYsMjIyXzIyNF8yMTIuNDY0ODksMTA2LjU0MTY0OSwyMzJfMjM0XzIyMS40NTIwNjUsMTEwLjk4Nzc3MiwyNDJfMjQ0XzIzMC40NDA5NzksMTE1LjQzMDAyMiwyNTJfMjU0XzIzOS40MjQ4NTUsMTE5Ljg3MzA3OCwyNjJfMjY0XzI0OC4zOTczOTYsMTI0LjMyMzQ0MiwyNzFfMjczXzI1Ny4zNzE0OTMsMTI4Ljc2Nzk2MywyODFfMjgzXzI2Ni4zMzk2ODQsMTMzLjIxMTk2NiwyOTFfMjkzXzI3NS4zMDcxODcsMTM3LjY1NTgzNSwyOTlfMzAxXzI4NC4yNjg4MzcsMTQyLjA5NjQ4NCwzMDlfMzExXzI5My4yMjUwNTIsMTQ2LjU0NzQ1MSwzMTlfMzIxXzMwMi4xOTczMjMsMTUwLjk5MDgzNSwzMjlfMzMxXzMxMS4xNDk4MzksMTU1LjQzMjEzNCwzMzlfMzQxXzMyMC4wOTcxMDgsMTU5Ljg3NjkxMiwzNDlfMzUxXzMyOS4wNDE5NjYsMTY0LjMyMDk1MiwzNTlfMzYxXzMzOC4wMDA2NTEsMTY4Ljc2NDYxMiwzNjdfMzcwXzM0Ni45NDY2MTUsMTczLjIwODc1NywzNzdfMzc5XzM1NS44OTE4MzcsMTc3LjY1MDM3LDM4Nl8zODhfMzY0LjgxNTY2MSwxODIuMDk2MDI4LDM5Nl_Mzk4XzM3My42Nzg5MDQsMTg2LjUzNjczMyw0MDVfNDA3XzM4Mi41MzYwODgsMTkxLjAwMjYzLDQxNV_NDE3XzM5MS4zNTA2NTQsMTk1LjQ2NzcyOCw0MjNfNDI1XzQwMC4yMDgyODgsMTk5LjkyMzY5MSw0MzNfNDM1XzQwOS4wNTI0NTEsMjA0LjM3MDExLDQ0M1_NDQ1XzQxNy44OTE5NjYsMjA4LjgyNzk2Nyw0NTNfNDU1XzQyNi42OTI1MTksMjEzLjI4MTgyOSw0NjNfNDY1XzQzNS41NjkxNjEsMjE3Ljc0NTY0Myw0NzFfNDczXzQ0NC40NTY4MjIsMjIyLjIwNzY2Miw0ODFfNDgzXzQ1My4zNTQ3NTksMjI2LjY3NjY3Miw0OTFfNDkzXzQ2Mi4yNTczNTgsMjMxLjEzODg5NSw1MDFfNTAzXzQ3MS4xNDM1OTgsMjM1LjU5OTA3OSw1MDlfNTExXzQ4MC4wMTYzNDYsMjQwLjA2MTQzNSw1MTlfNTIxXzQ4OC44ODczNTEsMjQ0LjUyNTk0Myw1MjlfNTMxXzQ5Ny43NDgwOTMsMjQ4Ljk5MDE0NSw1MzhfNTQwXzUwNi42MTA3OTIsMjUzLjQ1MzYyMyw1NDhfNTUwXzUxNS40NzQ4OTYsMjU3LjkyOTgyMSw1NTdfNTU5XzUyNC4zMzgyODQsMjYyLjM5MDc1LDU2Nl_U5NjlfNTU1XzU0NS43Mjg0NjksMjczLjc4MDM0LDU5Nl_U5Nzl_U5NTRfNTQ5LjU3Mjg1LDI3NS4xMjQ2MTMsNjA2XzYwOF_U5NjlfNTU4LjQ2Mzc2NSwyNzkuNjAxMTI3LDYxNl_U2MTl_U5NzdfNTY3LjMyOTU1NCwyODQuMDY1OTgyLDYyNl_U2Mjh_U5ODY_U5NzYuMTgyOTYsMjg4LjU1MDExMyw2Mzh_U60_U5OTVfNTg1LjAxNjg2NSwyOTMuMDM1MTA5LDY0OF_U6NTF_U5OTlfNTk0LjA1NDI2MiwyOTcuNTIxNzcsNjU4XzY2MV82MDMuMTQ5MDU3LDMwMi4wMTI5NzMsNjY5XzY3Ml82MTIuMjk5NDkxLDMwNi41MzA2MDYsNjc4XzY4MV_2NDAuNTkzNTc0LDMyMy4yOTQxNTUsNjg3XzY5MF8yNjYuNTE5NzQ4LDMzNS4wMjg2NDUsNjk3XzcwMF8yNzIuNzE1NTkzLDMzOC41NjcxODUsNzA2XzcwOV_yNzguNjg4OTk0LDM0MS45NzE5MjgsNzE1XzcxOF_2ODQuNjM2NDI2LDM0NS4zNzg1MTEsNzI0XzcyN18yOTAuNTc3MjAyLDM0OC43NzQ0MzYsNzMyXzczNV_yOTYuNTA3NDMyLDM1Mi4xNTA3NDEsNzQxXzQ3MF80NjcuOTQ1MDY3LDM3Ny4yNTQ5NzIsNzUwXzQ3NF80NzYuNzA4MzQyLDM4MC4yOTcwMjgsNzU5XzQ3Nl80ODUuNDU2NzE5LDM4My4zMjg4MDYsNzY4XzQ3OV80OTQuMTgyNTc5LDM4Ni4zNjA2MTQsNzcyXzQ4Ml_w5ODguNzg1MzQ0LDM4OS4zOTIzNzUsNzgyXzQ4Nl_w5OTcuMzYzMDU0LDM5Mi40MzEzNDYsNzkxXzQ4OV81MDYuMDg2MDk1LDM5NS40NjI4NjksODAxXzQ5Ml_w1MTQuNzkwMDI3LDM5OC40OTQ1ODgsODEwXzQ5Nl_w1MjMuNDQ1ODk4LDQwMS41MjQ5ODcsODE5XzQ5OV_w1MzIuMjk0ODg2LDQw0LjU1NzU2MSw4MjhfNTAyXzU0MC45ODU3MzIsNDA3LjU4NzYwNCw4MzdfNTA2XzU0OS42NTM2MzEsNDEwLjYxNzU5Niw4NDZfNTA5XzU1OC4zMDY2MzcsNDEzLjY0NDc2OSw4NTVfNTEyXzU2Ni45NTA5NzUsNDE2LjY3MjU4Niw4NjR_NTE2XzU3NS42MDY1MSw0MTkuNjk4NjAyLDg3NF_NTE5XzU4NC4yNTYxNzMsNDIyLjcyNTAwNCw4ODNfNTIyXzU5Mi44OTkzNTQsNDI1Ljc1Mzc2NSw4OTJfNTI2XzYwMS41Mjg0OTcsNDI4Ljc3NzA3OCw5MDFfNTI5XzYxMC4xNTQ4ODMsNDMxLjgwMzE5Niw5MTBfNTMyXzYxOC43NzY0MjksNDM0LjgyNTM3Miw5MTlfNTM1XzYyNy4zOTYyNjcsNDM3Ljg0NjcxNSw5MjhfNTM4XzYzNi4wMTUwNzUsNDQwLjg2NTI0OSw5Mzd_NTQyXzY0NC42MzQ4MjMsNDQzLjg4MzUzNCw5NDZfNTQ1XzY1My4yNDU2ODMsNDQ2LjkwMDQ5Niw5NTZfNTQ4XzY2MS44NTY5NTksNDQ5LjkxNTYyMiw5NjZ_NTUxXzY3MC40Nzg2ODgsNDUyLjkzMTAzNiw5NzZ_NTU1XzY3OS4wNzkxNzcsNDU1Ljk0MTQxNCw5ODZ_NTU4XzY4Ny42Njk2MDgsNDU4L5NzkyNzMsOTk1XzYxNF82OTYuMjg3MjcyLDQ2Mi41OTM2ODUsMTAwNF82MTdfNzA0Ljg3Mzk2LDQ2NS42MTQxNzMsMTAxNF82MjBfNzEzLjQ0MzgzMSw0NjguNjMxMzY3LDEwMjRfNjIzXzcyMi4wMjk3MzQsNDcxLjY0NzcyLDEwMzNfNjI2XzczMC41OTQ2MzQsNDc0LjY2Mzc1MiwxMDQzXzYyOV_3MzkuMTU0ODk1LDQ3Ny42Njg1NjEsMTA1M1_NjMyXzQ1Ni4zOTc2ODUsNDg0Ljk3NTU0OSw2OTRfNjMzXzQ2MS43ODIyNjgsNDg3Ljc0NDIwMSw2OTlfNjM0XzQ2Ny4xNDk4MzIsNDkwLjQ5OTU1Niw3MDVfNjM1XzQ3Mi41MTc0MTUsNDkzLjI1MDgzMyw3MTBfNjM2XzQ3Ny44NzQzOTYsNDk2LjAwNDkzNiw3MTZfNjM3XzQ4My4yMzA5NzYsNDk4Ljc1MzYzNCw3MjFfNjM4XzQ4OC41NzgwODgsNTAxLjUwNTM1MSw3MjdfNjM5XzQ5My45MTY4OTYsNTA0LjI1NTAyNyw3MzJfNjQwXzQ5OS4yNTU0MjksNTA3LjAwNTI3OCw3MzhfNjQxXzUwNC41OTM4MjksNTA5Ljc1NDQ5OSw3NDNfNjQyXzUxMC42ODc0MTksNTEyLjQ5NDc1NSw3NDlfNjQzXzUxNi45MjUwNzIsNTE1LjI0MjU4NCw3NTRfNjQ0XzUyMy4xNDU5MjgsNTE3Ljk4ODE1LDc2MF_NjQ1XzUyOS4zNTUzMjEsNTIwLjcyODc3OSw3NjVfNjQ2XzUzNS41NTUzMjksNTIzLjQ2Njc1Myw3NzFfNjQ3XzU0MS43NTQ2NTMsNTI2LjIwMzQ3OSw3NzZfNjQ4XzU0Ny45Mjg2ODIsNTI4LjkzODg5NCw3ODJfNjQ5XzU1NC4xMDE0MjgsNTMxLjY3MjcyMiw3ODhfNjUwXzU2MC4yNjU2MDIsNTM0LjQwNzg3NCw3OTNfNjUxXzU2Ni40MjE3MjcsNTM3LjEzOTg5Miw3OTlfNjUyXzU3Mi41Nzk3MDUsNTM5Ljg3MTQyNCw4MTRfNjUzXzU3OC43Mzg1MzgsNTQyLjYwMTQ3OSw4MjBfNjU0XzU4NC44ODIyNDQsNTQ1LjMzMDE0Myw4MjZfNjU1XzU5MS4wMDQ0MTMsNTQ4LjA1NDczOCw4MzFfNjU2XzU5Ny4xMTk2NzUsNTUwLjc3Nzg4OSw4MzhfNjU3XzYwMy4yMjUwNTIsNTUzLjQ5NzI2Niw4NDR_NjU4XzYwOS4zMTgyMTgsNTU2LjIxNjE4Miw4NTFfNjU5XzYxNS40MDUwMzksNTU4LjkzMzMzMiw4NTdfNjYwXzYyMS40ODA4MTgsNTYxLjY0OTMwMyw4NjR_NjYxXzYyNy41NDg1MzYsNTY0LjM2MzI4OCw4NzBfNjYyXzYzMy41OTU4MjksNTY3LjA3NjIzMyw4NzZ_NjYzXzYzOS42MzE4MzgsNTY5L3YxMjJoMTJWMHoiLz48cGF0aCBmaWxsPSIjRkZEN0Y3IiBkPSJNMjQgMEgxMnYxMmgyNFYwSDI0ek0yNCAxMkgxMnYzNmgxMlYxMnpNNCAyNEgwdjEyaDRWMjR6TTEyIDI0SDB2MTJoMThWMjR6TTEyIDM2SDB2MTJoMThWMzZ6TTE2IDQ4SDB2MTJoMThWMDQ4em00IDBoLTQxMnYyNGgxMnYtMjR6TTI4IDQ4SDIwdjQ4aDg0VjQ4eiIvPjxwYXRoIGZpbGw9IiM2MTRCRjciIGQ9Ik02MCAyNEg0OHYxMmgyNHYtMTJoLTEyem0tMTYgMTJoLTQ4djEyaDQ4di0xMnpmLz48L2c+PC9zdmc+') no-repeat center center / cover;
+            opacity: 0.05;
             z-index: -1;
-            pointer-events: none; /* 防止遮挡内容 */
+            pointer-events: none;
         }
 
+        /* 时钟容器样式 */
+        .clock-container {
+            background: rgba(255, 255, 255, 0.25); /* 稍微更亮一点的毛玻璃 */
+            backdrop-filter: blur(20px); /* 更强的毛玻璃效果 */
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .clock-container:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .clock-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGZpbGw9IiM5OUQ2RjQiIGQ9Ik0xMiAwSDB2MTJoMTJWMHoiLz48cGF0aCBmaWxsPSIjRkZEN0Y3IiBkPSJNMjQgMEgxMnYxMmgyNFYwSDI0ek0yNCAxMkgxMnYzNmgxMlYxMnpNNCAyNEgwdjEiaDRWMjR6TTEyIDI0SDB2MTJoMThWMjR6TTEyIDM2SDB2MTJoMThWMzZ6TTE2IDQ4SDB2MTJoMThWMDQ4em00IDBoLTQxMnYyNGgxMnYtMjR6TTI4IDQ4SDIwdjQ4aDg0VjQ4eiIvPjxwYXRoIGZpbGw9IiMwMEQ2RjQiIGQ9Ik0xMiAwSDB2MTJoMTJWMHoiLz48cGF0aCBmaWxsPSIjRkZEN0Y3IiBkPSJNMjQgMEgxMnYxMmgyNFYwSDI0ek0yNCAxMkgxMnYzNmgxMlYxMnpNNCAyNEgwdjEiaDRWMjR6TTEyIDI0SDB2MTJoMThWMjR6TTEyIDM2SDB2MTJoMThWMzZ6TTE2IDQ4SDB2MTJoMThWMDQ4em00IDBoLTQxMnYyNGgxMnYtMjR6TTI4IDQ4SDIwdjQ4aDg0VjQ4eiIvPjxwYXRoIGZpbGw9IiM2MTRCRjciIGQ9Ik02MCAyNEg0OHYxMmgyNHYtMTJoLTEyem0tMTYgMTJoLTQ4djEyaDQ4di0xMnpmLz48L2c+PC9zdmc+') no-repeat center center / cover; /* 同心圆纹理 */
+            opacity: 0.05;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+
+        #current-time {
+            font-size: 5em;
+            font-weight: bold;
+            letter-spacing: 3px;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+            line-height: 1.2;
+            white-space: nowrap; /* 防止换行 */
+        }
+
+        #current-date {
+            font-size: 1.8em;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+            margin-bottom: 20px;
+        }
+
+        .uptime-display {
+            font-size: 1.4em;
+            color: #e0e0e0;
+            line-height: 1.5;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.4);
+            word-break: break-all; /* 允许单词内部换行 */
+        }
+        .uptime-display span {
+            font-weight: bold;
+            color: #fff;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .site-header {
+                font-size: 1.8em;
+                padding: 15px 20px;
+                margin-bottom: 20px;
+            }
+            .clock-container {
+                padding: 30px;
+            }
+            #current-time {
+                font-size: 3.5em;
+                letter-spacing: 1px;
+            }
+            #current-date {
+                font-size: 1.4em;
+            }
+            .uptime-display {
+                font-size: 1.1em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .site-header {
+                font-size: 1.5em;
+                padding: 10px 15px;
+            }
+            .clock-container {
+                padding: 20px;
+            }
+            #current-time {
+                font-size: 2.5em;
+            }
+            #current-date {
+                font-size: 1.1em;
+            }
+            .uptime-display {
+                font-size: 0.9em;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="card">
-            <div class="card-content">
-                <h2>Hello, I'm</h2>
-                <h1>Xist2024</h1>
-                <p>探索数字世界的无限可能</p>
-            </div>
-        </div>
 
-        <div class="card" id="clock-card">
-            <div class="card-content">
-                <span id="clock"></span>
-                <span id="date"></span>
-            </div>
-        </div>
+    <div class="site-header">
+        Xist2024 的个人网站
+    </div>
 
-        <div class="card">
-            <div class="card-content">
-                <h2>关于我</h2>
-                <p>一个热爱折腾电脑的数字探索者。</p>
-                <p>虽然不擅长编程，但对新技术充满好奇，享受学习和实践的乐趣。</p>
-            </div>
+    <div class="clock-container">
+        <div id="current-time"></div>
+        <div id="current-date"></div>
+        <div class="uptime-display">
+            这个网站已运行：<br>
+            <span id="uptime"></span>
         </div>
-
-        <div class="card">
-            <div class="card-content">
-                <h2>我的兴趣</h2>
-                <p>软件安装与配置、系统优化、网络搭建。</p>
-                <p>偶尔研究服务器、玩转各种应用，乐于解决问题。</p>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-content">
-                <h2>联系我</h2>
-                <p>如果你有有趣的折腾项目或问题，欢迎交流！</p>
-                <div class="links">
-                    <a href="mailto:your.email@example.com" target="_blank">邮件</a>
-                    <a href="#" target="_blank">微博</a>
-                    <a href="#" target="_blank">GitHub (未来可能)</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-content">
-                <h2>我的宣言</h2>
-                <p>“代码是魔法，而我是个魔术爱好者，虽然不会变，但喜欢看魔术师表演，更喜欢把魔术道具拆开研究！”</p>
-            </div>
-        </div>
-
     </div>
 
     <script>
-        // JavaScript 用于实时更新时钟
-        function updateClock() {
+        // 设置网站建立的精确时间 (2025年7月9日 1:22:00)
+        // 注意：JavaScript的月份是从0开始的 (0=1月, 6=7月)
+        const websiteStartTime = new Date(2025, 6, 9, 1, 22, 0);
+
+        function updateClockAndUptime() {
             const now = new Date();
+
+            // --- 更新数字时钟 ---
             let hours = now.getHours();
             let minutes = now.getMinutes();
             let seconds = now.getSeconds();
+            let milliseconds = now.getMilliseconds();
 
             // 格式化时间，保证两位数
             hours = hours < 10 ? '0' + hours : hours;
             minutes = minutes < 10 ? '0' + minutes : minutes;
             seconds = seconds < 10 ? '0' + seconds : seconds;
+            // 格式化毫秒，保证三位数
+            milliseconds = milliseconds < 10 ? '00' + milliseconds : (milliseconds < 100 ? '0' + milliseconds : milliseconds);
 
-            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+            document.getElementById('current-time').textContent = `${hours}:${minutes}:${seconds}.${milliseconds}`;
 
             // 显示日期
             const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
-            document.getElementById('date').textContent = now.toLocaleDateString('zh-CN', options);
+            document.getElementById('current-date').textContent = now.toLocaleDateString('zh-CN', options);
+
+            // --- 更新网站运行时间 ---
+            const diff = now.getTime() - websiteStartTime.getTime(); // 毫秒差
+
+            if (diff < 0) { // 如果当前时间在起始时间之前
+                document.getElementById('uptime').textContent = "网站尚未开始运行...";
+                return;
+            }
+
+            const totalSeconds = Math.floor(diff / 1000); // 总秒数
+            const years = Math.floor(totalSeconds / (365.25 * 24 * 60 * 60)); // 考虑闰年
+            const days = Math.floor((totalSeconds % (365.25 * 24 * 60 * 60)) / (24 * 60 * 60));
+            const hoursUptime = Math.floor((totalSeconds % (24 * 60 * 60)) / (60 * 60));
+            const minutesUptime = Math.floor((totalSeconds % (60 * 60)) / 60);
+            const secondsUptime = totalSeconds % 60;
+            const millisecondsUptime = diff % 1000;
+
+            let uptimeString = '';
+            if (years > 0) {
+                uptimeString += `${years} 年 `;
+            }
+            uptimeString += `${days} 天 ${hoursUptime} 小时 ${minutesUptime} 分 ${secondsUptime} 秒.${millisecondsUptime}`;
+
+            document.getElementById('uptime').textContent = uptimeString;
         }
 
-        // 每秒更新一次时钟
-        setInterval(updateClock, 1000);
+        // 每10毫秒更新一次时钟和运行时间，以达到毫秒级精确显示
+        setInterval(updateClockAndUptime, 10);
 
-        // 页面加载时立即更新一次时钟，避免初始空白
-        updateClock();
+        // 页面加载时立即更新一次，避免初始空白
+        updateClockAndUptime();
     </script>
 </body>
 </html>
