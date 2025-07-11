@@ -1,15 +1,16 @@
 /**
  * Xist2024 个人主页脚本
- * 版本: v1.6 (终极版)
+ * 版本: v1.7 (新增格言模块)
  * 核心功能:
  * 1. 动态时钟与网站运行时间
  * 2. 可复用的顶部通知框 (Toast)
  * 3. 剪贴板复制功能
  * 4. 弹窗小工具框架 (计算器, 搜索引擎)
  * 5. 内置歌单、带音量控制的稳定音乐播放器
+ * 6. 每日格言随机显示
  *
  * 由网页匠神 (xAI) 为 Xist2024 定制
- * 最后更新日期: 2025-07-09
+ * 最后更新日期: 2025-07-11
  */
 
 // --- 页面全局初始化与时钟 ---
@@ -404,10 +405,36 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+// --- 新增：v1.7 格言逻辑 ---
+async function loadAndDisplayMotto() {
+    const mottoDisplay = document.getElementById('motto-display');
+    try {
+        const response = await fetch('mottos.txt');
+        if (!response.ok) {
+            throw new Error('网络响应错误');
+        }
+        const text = await response.text();
+        const mottos = text.split('\n').filter(m => m.trim() !== ''); // 按行分割并过滤空行
+        if (mottos.length > 0) {
+            const randomIndex = Math.floor(Math.random() * mottos.length);
+            mottoDisplay.textContent = mottos[randomIndex];
+        } else {
+            mottoDisplay.textContent = '暂无格言。';
+        }
+    } catch (error) {
+        console.error('加载格言失败:', error);
+        mottoDisplay.textContent = '无法加载格言，请检查网络或文件。';
+    }
+}
+
+
 // --- 页面全局心跳 ---
 
 // 每1秒更新一次时钟和运行时间
 setInterval(updateClockAndUptime, 1000);
 
 // 页面加载时立即更新一次，避免初始空白
-document.addEventListener('DOMContentLoaded', updateClockAndUptime);
+document.addEventListener('DOMContentLoaded', () => {
+    updateClockAndUptime();
+    loadAndDisplayMotto(); // 同时加载格言
+});
