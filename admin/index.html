@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>后台登录 - Xist2024</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+    <div id="login-interface">
+        <div class="card-base login-card">
+            <h1>后台管理登录</h1>
+            <div id="error-msg" class="login-error-message"></div>
+            <input type="password" id="password-input" placeholder="请输入访问密码">
+            <button id="login-button">登 录</button>
+        </div>
+    </div>
+
+    <div id="backend-content" style="display: none;">
+        <div class="card-base" style="max-width: 800px; padding: 40px; text-align: left;">
+            <h2>🎉 欢迎回来, Xist2024!</h2>
+            <p>您已成功登录到管理后台。</p>
+            <p>您可以在这里添加您的管理工具，例如：</p>
+            <ul>
+                <li>一个可以编辑歌单的表单。</li>
+                <li>网站访问数据统计。</li>
+                <li>一个新的想法或日记记录区。</li>
+            </ul>
+            <br>
+            <a href="/" style="color: #fff; text-decoration: none; font-weight: bold;">➡️ 返回主页</a>
+        </div>
+        </div>
+
+    <script>
+        // --- JavaScript 验证逻辑 ---
+
+        // 1. 在这里设置你的后台密码
+        const CORRECT_PASSWORD = "xistyyds"; // 请务必修改为一个更复杂的密码！
+
+        // 2. 获取页面上的元素
+        const loginInterface = document.getElementById('login-interface');
+        const backendContent = document.getElementById('backend-content');
+        const passwordInput = document.getElementById('password-input');
+        const loginButton = document.getElementById('login-button');
+        const errorMessage = document.getElementById('error-msg');
+
+        // 3. 登录成功后要执行的操作
+        function showBackend() {
+            loginInterface.style.display = 'none'; // 隐藏登录框
+            backendContent.style.display = 'block'; // 显示后台内容
+        }
+
+        // 4. 处理登录请求
+        function attemptLogin() {
+            if (passwordInput.value === CORRECT_PASSWORD) {
+                showBackend();
+            } else {
+                errorMessage.textContent = '密码错误，请检查后重试。';
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        }
+        
+        // 5. 绑定事件
+        loginButton.addEventListener('click', attemptLogin);
+        passwordInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                attemptLogin();
+            }
+        });
+    </script>
+</body>
+</html>
