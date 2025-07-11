@@ -3,85 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xist2024的主页</title>
+    <title>Xist2024 个人主页</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="github.png" type="image/x-icon">
 </head>
 <body>
 
     <div id="toast-notification"></div>
 
-    <div class="site-header card-base">
-        Xist2024 的个人网站
-    </div>
+    <div id="popup-container"></div>
+
+    <div class="card-base site-header">Xist2024 的个人空间</div>
 
     <div id="music-player-card" class="card-base">
-        <div id="song-title">正在加载音乐...</div>
-
+        <div id="song-title">歌曲加载中...</div>
         <div class="progress-container">
             <div id="progress-bar-container">
                 <div id="progress-bar"></div>
             </div>
             <div id="time-display">00:00 / 00:00</div>
         </div>
-
         <div class="player-controls">
-            <!-- 播放/暂停 和 下一首 -->
             <div class="main-controls">
-                <button id="play-pause-btn" class="control-button">
-                    <img src="01.png" alt="Play/Pause">
-                </button>
+                <button id="play-pause-btn" class="control-button"></button>
                 <button id="next-btn" class="control-button">下一首</button>
             </div>
-
-            <!-- v1.6 新增：音量控制区域 -->
             <div class="volume-container">
                 <span id="volume-icon">🔊</span>
-                <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="1">
+                <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5">
             </div>
         </div>
-
         <audio id="audio-player"></audio>
     </div>
 
-    <div class="clock-container card-base">
-        <div id="current-time"></div>
-        <div id="current-date"></div>
+    <div class="card-base clock-container">
+        <div id="current-time">00:00:00</div>
+        <div id="current-date">正在获取日期...</div>
         <div class="uptime-display">
-            这个网站已运行：<br>
-            <span id="uptime"></span>
+            本站已运行: <span id="uptime">计算中...</span>
         </div>
     </div>
 
-    <div class="contact-card card-base">
+    <div class="card-base contact-card">
         <a href="https://github.com/Xist2024" target="_blank" class="contact-item">
-            <img src="github.png" alt="GitHub Icon"><span>GitHub</span>
+            <img src="github.png" alt="GitHub">
+            <span>GitHub</span>
         </a>
-        <a href="#" class="contact-item" onclick="copyToClipboard('3310088475', 'QQ号')">
-            <img src="qq.png" alt="QQ Icon"><span>QQ</span>
-        </a>
-        <a href="#" class="contact-item" onclick="copyToClipboard('Xist_2024@outlook.com', '电子邮件地址')">
-            <img src="email.png" alt="Email Icon"><span>Email</span>
-        </a>
+        <div class="contact-item" onclick="copyToClipboard('3428974982', 'QQ号')">
+            <img src="qq.png" alt="QQ">
+            <span>QQ</span>
+        </div>
+        <div class="contact-item" onclick="copyToClipboard('xist2024@qq.com', '邮箱')">
+            <img src="email.png" alt="Email">
+            <span>Email</span>
+        </div>
     </div>
 
-    <div class="about-me-card card-base">
-        <p>一名十二岁初一学生</p>
-        <p>喜欢玩游戏和用AI编程</p>
-        <p>只想安安稳稳的过每一天</p>
+    <div class="card-base about-me-card">
+        <p>你好，我是 Xist2024，一名热爱技术与生活的高中生。</p>
+        <p>欢迎来到我的个人空间，希望你在这里玩得开心！</p>
         <a href="https://github.com/Xist2024" target="_blank" class="github-link">
-            <img src="github.png" alt="GitHub Icon">
-            <span>点击这里查看我的编程作品</span>
+            <img src="github.png" alt="GitHub">
+            <span>探索我的项目</span>
         </a>
     </div>
 
-    <div class="widgets-card card-base">
-        <h2>小工具集合</h2>
-        <a href="https://www.weather.com.cn/weather1d/101300801.shtml#input" target="_blank" class="widget-item">今日天气</a>
-        <a href="#" class="widget-item" onclick="setupSearchEngine()">搜索引擎</a>
-        <a href="#" class="widget-item" onclick="setupCalculator()">计算器</a>
+    <div class="card-base motto-card">
+        <h2>每日格言</h2>
+        <p id="motto-display">正在加载格言...</p>
     </div>
 
-    <div id="popup-container"></div>
+    <div class="card-base widgets-card">
+        <h2>小工具箱</h2>
+        <a class="widget-item" href="https://cn.bing.com/" target="_blank">天气预报</a>
+        <a class="widget-item" onclick="setupSearchEngine()">搜索引擎</a>
+        <a class="widget-item" onclick="setupCalculator()">计算器</a>
+    </div>
 
     <script src="script.js"></script>
 </body>
