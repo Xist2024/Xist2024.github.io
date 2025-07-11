@@ -5,55 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>后台登录 - Xist2024</title>
     <link rel="stylesheet" href="../style.css">
-    <style>
-        /* 为后台特定元素添加一些额外样式 */
-        .motto-editor-container {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        #motto-editor {
-            width: 100%;
-            min-height: 150px;
-            padding: 15px;
-            font-size: 1.1em;
-            color: #fff;
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 10px;
-            box-sizing: border-box;
-            line-height: 1.6;
-            resize: vertical;
-        }
-        #motto-editor:focus {
-            outline: none;
-            border-color: rgba(255, 255, 255, 0.7);
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-        }
-        #save-mottos-button {
-            width: 100%;
-            margin-top: 15px;
-            padding: 15px;
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #fff;
-            background: rgba(80, 160, 255, 0.25);
-            border: 1px solid rgba(80, 160, 255, 0.4);
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        #save-mottos-button:hover {
-            background: rgba(80, 160, 255, 0.4);
-        }
-        #save-status {
-            margin-top: 15px;
-            color: #a5d6a7;
-            font-weight: bold;
-            height: 20px;
-            text-align: center;
-        }
-    </style>
 </head>
 <body>
 
@@ -70,22 +21,19 @@
         <div class="card-base" style="max-width: 800px; padding: 40px; text-align: left;">
             <h2>🎉 欢迎回来, Xist2024!</h2>
             <p>您已成功登录到管理后台。</p>
-            
-            <div class="motto-editor-container">
-                <h3>格言编辑器</h3>
-                <p style="font-size: 0.9em; color: #ccc;">在这里管理您的格言列表，每条格言占一行。保存后，您需要手动将内容复制到项目的 `mottos.txt` 文件中以更新主页。</p>
-                <textarea id="motto-editor" placeholder="正在加载格言..."></textarea>
-                <button id="save-mottos-button">保 存 编 辑</button>
-                <div id="save-status"></div>
-            </div>
-
+            <p>您可以在这里添加您的管理工具，例如：</p>
+            <ul>
+                <li>一个可以编辑歌单的表单。</li>
+                <li>网站访问数据统计。</li>
+                <li>一个新的想法或日记记录区。</li>
+            </ul>
             <br>
-            <a href="/" style="color: #fff; text-decoration: none; font-weight: bold; margin-top: 20px; display: inline-block;">➡️ 返回主页</a>
+            <a href="/" style="color: #fff; text-decoration: none; font-weight: bold;">➡️ 返回主页</a>
         </div>
-    </div>
+        </div>
 
     <script>
-        // --- JavaScript 验证与后台逻辑 ---
+        // --- JavaScript 验证逻辑 ---
 
         // 1. 在这里设置你的后台密码
         const CORRECT_PASSWORD = "xistyyds"; // 请务必修改为一个更复杂的密码！
@@ -96,12 +44,11 @@
         const passwordInput = document.getElementById('password-input');
         const loginButton = document.getElementById('login-button');
         const errorMessage = document.getElementById('error-msg');
-        
+
         // 3. 登录成功后要执行的操作
         function showBackend() {
             loginInterface.style.display = 'none'; // 隐藏登录框
             backendContent.style.display = 'block'; // 显示后台内容
-            loadMottosForEditing(); // 新增：加载格言到编辑器
         }
 
         // 4. 处理登录请求
@@ -122,45 +69,6 @@
                 attemptLogin();
             }
         });
-
-        // --- 新增：格言管理逻辑 ---
-        const mottoEditor = document.getElementById('motto-editor');
-        const saveMottosButton = document.getElementById('save-mottos-button');
-        const saveStatus = document.getElementById('save-status');
-        const MOTTOS_STORAGE_KEY = 'xist2024-mottos';
-
-        // 从服务器文件或本地存储加载格言
-        async function loadMottosForEditing() {
-            const savedMottos = localStorage.getItem(MOTTOS_STORAGE_KEY);
-            if (savedMottos) {
-                mottoEditor.value = savedMottos;
-                console.log('已从浏览器本地存储加载格言。');
-            } else {
-                try {
-                    const response = await fetch('../mottos.txt');
-                    if (!response.ok) throw new Error('文件未找到');
-                    const text = await response.text();
-                    mottoEditor.value = text;
-                    console.log('已从 mottos.txt 文件加载初始格言。');
-                } catch (error) {
-                    console.error('加载 mottos.txt 失败:', error);
-                    mottoEditor.value = '无法加载格言文件，请检查文件是否存在。';
-                }
-            }
-        }
-
-        // 将编辑后的格言保存到本地存储
-        function saveMottos() {
-            const newMottos = mottoEditor.value;
-            localStorage.setItem(MOTTOS_STORAGE_KEY, newMottos);
-            saveStatus.textContent = '✅ 已成功保存到您的浏览器！';
-            setTimeout(() => {
-                saveStatus.textContent = '';
-            }, 3000);
-        }
-
-        saveMottosButton.addEventListener('click', saveMottos);
-
     </script>
 </body>
 </html>
