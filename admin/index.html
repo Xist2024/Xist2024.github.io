@@ -61,6 +61,7 @@
             border-radius: 4px;
             color: var(--text-color);
             box-sizing: border-box;
+            font-size: 1em;
         }
         textarea {
             min-height: 100px;
@@ -102,22 +103,25 @@
             padding: 10px;
             border-radius: 4px;
             margin-bottom: 5px;
+            word-break: break-all;
         }
         #playlist-ul button {
             background: none;
             border: none;
             color: var(--accent-color);
             cursor: pointer;
-            font-size: 1.2em;
+            font-size: 1.5em;
+            padding: 0 5px;
         }
-        #generated-code-wrapper {
+        #generated-code-wrapper, #generated-css-wrapper {
             margin-top: 15px;
         }
-        #generated-code {
+        #generated-code, #generated-css {
             font-family: 'Courier New', Courier, monospace;
             background-color: #111;
             white-space: pre-wrap;
             word-wrap: break-word;
+            min-height: 150px;
         }
 
         /* --- Toast 通知 --- */
@@ -164,28 +168,28 @@
             <form id="profile-form">
                 <div class="form-group">
                     <label for="profile-line1">关于我 - 第一行</label>
-                    <input type="text" id="profile-line1">
+                    <input type="text" id="profile-line1" placeholder="一名十二岁初一学生">
                 </div>
                 <div class="form-group">
                     <label for="profile-line2">关于我 - 第二行</label>
-                    <input type="text" id="profile-line2">
+                    <input type="text" id="profile-line2" placeholder="喜欢玩游戏和用AI编程">
                 </div>
                 <div class="form-group">
                     <label for="profile-line3">关于我 - 第三行</label>
-                    <input type="text" id="profile-line3">
+                    <input type="text" id="profile-line3" placeholder="只想安安稳稳的过每一天">
                 </div>
                 <hr style="border-color: var(--primary-color);">
                 <div class="form-group">
                     <label for="contact-qq">QQ 号</label>
-                    <input type="text" id="contact-qq">
+                    <input type="text" id="contact-qq" placeholder="3310088475">
                 </div>
                 <div class="form-group">
                     <label for="contact-email">Email 地址</label>
-                    <input type="text" id="contact-email">
+                    <input type="text" id="contact-email" placeholder="Xist_2024@outlook.com">
                 </div>
                 <div class="form-group">
                     <label for="contact-github">GitHub 链接</label>
-                    <input type="url" id="contact-github">
+                    <input type="url" id="contact-github" placeholder="https://github.com/Xist2024">
                 </div>
                 <button type="submit" class="btn">保存所有信息</button>
             </form>
@@ -200,7 +204,7 @@
                     <input type="text" id="post-title" placeholder="我今天学习了...">
                 </div>
                 <div class="form-group">
-                    <label for="post-content">内容</label>
+                    <label for="post-content">内容 (支持换行)</label>
                     <textarea id="post-content" placeholder="今天我学会了如何使用 localStorage..."></textarea>
                 </div>
                 <button type="submit" class="btn">生成 HTML 代码</button>
@@ -225,7 +229,7 @@
             </form>
             <div id="generated-css-wrapper" style="display: none;">
                 <hr style="border-color: var(--primary-color);">
-                <label>请复制下面的 CSS 代码到 style.css 中替换原有背景样式：</label>
+                <label>请复制下面的 CSS 代码，并替换掉 style.css 中原有的 `body { ... }` 样式块：</label>
                 <textarea id="generated-css" readonly></textarea>
                 <button class="btn btn-secondary" id="copy-css-btn">复制到剪贴板</button>
             </div>
@@ -245,20 +249,39 @@
         // 为了让您的主页(index.html)能够使用您在这里保存的数据，您需要修改您主页的 `script.js` 文件。
         //
         // 1. **修改歌单**:
-        //    在 `script.js` 里找到您的 `songList` 数组，像这样：
-        //    `const songList = ["song1.m4a", "song2.m4a", ...];`
-        //    把它修改为从 localStorage 读取，如果读取不到，就使用一个空数组：
+        //    在 `script.js` 里找到您的 `songList` 数组定义，例如：
+        //    `const songList = ["Croatian_Rhapsody.m4a", ...];`
+        //    把它修改为从 localStorage 读取，如果读取不到，就使用一个空数组作为备用：
         //    `const songList = JSON.parse(localStorage.getItem('xist_playlist')) || [];`
         //
         // 2. **修改个人信息**:
-        //    在 `script.js` 的 `updateClockAndUptime` 或其他合适的初始化函数里，添加以下代码：
-        //    (您需要先给主页 index.html 里的对应元素加上 ID)
+        //    这个稍微复杂。首先，您需要给主页 `index.html` 里显示个人信息的地方加上 ID，例如：
+        //    `<p id="about-me-p1">一名十二岁初一学生</p>`
+        //    `<a href="#" id="qq-link" ...>...</a>`
+        //
+        //    然后在 `script.js` 的 `DOMContentLoaded` 事件或其他初始化函数里，添加以下代码来加载数据：
+        //    (这里的默认值是您最初网站上的内容，如果localStorage里没有保存过数据，就会显示它们)
+        //
         //    `document.getElementById('about-me-p1').textContent = localStorage.getItem('xist_profile_line1') || '一名十二岁初一学生';`
         //    `document.getElementById('about-me-p2').textContent = localStorage.getItem('xist_profile_line2') || '喜欢玩游戏和用AI编程';`
         //    `document.getElementById('about-me-p3').textContent = localStorage.getItem('xist_profile_line3') || '只想安安稳稳的过每一天';`
-        //    `document.getElementById('qq-link').onclick = () => copyToClipboard(localStorage.getItem('xist_contact_qq') || '3310088475', 'QQ号');`
-        //    `document.getElementById('email-link').onclick = () => copyToClipboard(localStorage.getItem('xist_contact_email') || 'Xist_2024@outlook.com', '电子邮件地址');`
-        //    `document.getElementById('github-link').href = localStorage.getItem('xist_contact_github') || 'https://github.com/Xist2024';`
+        //    
+        //    const qqLink = document.getElementById('qq-link');
+        //    if (qqLink) {
+        //        const qqNumber = localStorage.getItem('xist_contact_qq') || '3310088475';
+        //        qqLink.onclick = () => copyToClipboard(qqNumber, 'QQ号');
+        //    }
+        //
+        //    const emailLink = document.getElementById('email-link');
+        //    if (emailLink) {
+        //        const emailAddress = localStorage.getItem('xist_contact_email') || 'Xist_2024@outlook.com';
+        //        emailLink.onclick = () => copyToClipboard(emailAddress, '电子邮件地址');
+        //    }
+        //
+        //    const githubLink = document.querySelector('.contact-item a[href*="github.com"]'); // 通过这种方式找到GitHub链接
+        //    if(githubLink) {
+        //       githubLink.href = localStorage.getItem('xist_contact_github') || 'https://github.com/Xist2024';
+        //    }
         //
         // ===================================================================================
 
@@ -283,7 +306,7 @@
             playlistUl.innerHTML = '';
             playlist.forEach((song, index) => {
                 const li = document.createElement('li');
-                li.innerHTML = `<span>${song}</span><button data-index="${index}">&times;</button>`;
+                li.innerHTML = `<span>${song}</span><button data-index="${index}" title="删除">&times;</button>`;
                 playlistUl.appendChild(li);
             });
         }
@@ -365,20 +388,21 @@
         postGeneratorForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const title = postTitleInput.value.trim();
-            const content = postContentInput.value.trim().replace(/\n/g, '<br>');
+            const content = postContentInput.value.trim().replace(/\n/g, '<br>\n            '); // 为了格式优美，替换换行符
             if (!title || !content) {
                 showToast('标题和内容不能为空！', 3000);
                 return;
             }
 
             const htmlCode = `
-    <div class="card-base">
-        <h2>${title}</h2>
-        <p style="text-align: left; line-height: 1.6;">
+    <div class="card-base" style="text-align: left; padding: 30px;">
+        <h2 style="text-align: center;">${title}</h2>
+        <p style="line-height: 1.6;">
             ${content}
         </p>
-        <p style="font-size: 0.8em; opacity: 0.6; text-align: right;">发布于：${new Date().toLocaleDateString('zh-CN')}</p>
-    </div>`;
+        <p style="font-size: 0.8em; opacity: 0.6; text-align: right; margin: 20px 0 0;">发布于：${new Date().toLocaleDateString('zh-CN')}</p>
+    </div>
+    `;
             
             generatedCodeTextarea.value = htmlCode.trim();
             generatedCodeWrapper.style.display = 'block';
@@ -387,7 +411,7 @@
         copyCodeBtn.addEventListener('click', () => {
             generatedCodeTextarea.select();
             document.execCommand('copy');
-            showToast('代码已复制到剪贴板！');
+            showToast('HTML 代码已复制！');
         });
 
         // --- 4. 网站主题定制器逻辑 ---
@@ -405,16 +429,26 @@
                 return;
             }
 
+            // 生成与您原 style.css 中 body 样式完全一致的代码块，只替换背景图
             const cssCode = `
 body {
-    /* ... 您其他的 body 样式 ... */
-    background-image: url('${bgUrl}');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: rgba(0, 0, 0, 0.5);
-    background-blend-mode: overlay;
-    /* ... 您其他的 body 样式 ... */
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column; /* 垂直排列内容 */
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: #fff; /* 全局文字颜色，确保在深色背景上可见 */
+    background-image: url('${bgUrl}'); /* <-- 这里是新的背景图片 */
+    background-size: cover; /* 确保背景图片覆盖整个视口 */
+    background-position: center; /* 图片居中显示 */
+    background-repeat: no-repeat; /* 不重复平铺图片 */
+    background-color: rgba(0, 0, 0, 0.5); /* 黑色半透明层，50%透明度 */
+    background-blend-mode: overlay; /* 混合模式，使黑色层与图片混合 */
+    padding: 20px; /* 整体内边距 */
+    box-sizing: border-box; /* 边框盒模型 */
+    gap: 30px; /* 增加卡片之间的间距 */
 }`;
             
             generatedCssTextarea.value = cssCode.trim();
