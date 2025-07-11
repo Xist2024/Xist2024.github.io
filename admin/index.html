@@ -3,72 +3,431 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>后台登录 - Xist2024</title>
-    <link rel="stylesheet" href="../style.css">
+    <title>Xist2024 - 秘密控制台</title>
+    <style>
+        /* --- 全局样式 --- */
+        :root {
+            --bg-color: #1a1a2e;
+            --card-color: #16213e;
+            --primary-color: #0f3460;
+            --accent-color: #e94560;
+            --text-color: #e0e0e0;
+            --input-bg-color: #2a2a4e;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: var(--accent-color);
+            text-shadow: 0 0 5px rgba(233, 69, 96, 0.5);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        /* --- 卡片样式 --- */
+        .card {
+            background-color: var(--card-color);
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid var(--primary-color);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* --- 表单元素样式 --- */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="url"], textarea {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--input-bg-color);
+            border: 1px solid var(--primary-color);
+            border-radius: 4px;
+            color: var(--text-color);
+            box-sizing: border-box;
+        }
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .btn {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .btn:hover {
+            background-color: #ff6e85;
+        }
+        .btn:active {
+            transform: scale(0.98);
+        }
+        .btn-secondary {
+            background-color: var(--primary-color);
+        }
+        .btn-secondary:hover {
+            background-color: #275a9a;
+        }
+
+        /* --- 功能区特定样式 --- */
+        #playlist-ul {
+            list-style: none;
+            padding: 0;
+        }
+        #playlist-ul li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--input-bg-color);
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 5px;
+        }
+        #playlist-ul button {
+            background: none;
+            border: none;
+            color: var(--accent-color);
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+        #generated-code-wrapper {
+            margin-top: 15px;
+        }
+        #generated-code {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #111;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* --- Toast 通知 --- */
+        #toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--accent-color);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 5px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s, bottom 0.3s;
+        }
+        #toast.show {
+            opacity: 1;
+            visibility: visible;
+            bottom: 30px;
+        }
+    </style>
 </head>
 <body>
 
-    <div id="login-interface">
-        <div class="card-base login-card">
-            <h1>后台管理登录</h1>
-            <div id="error-msg" class="login-error-message"></div>
-            <input type="password" id="password-input" placeholder="请输入访问密码">
-            <button id="login-button">登 录</button>
-        </div>
+    <div class="container">
+        <h1>Xist2024 - 秘密控制台</h1>
+
+        <section class="card">
+            <h2>🎵 音乐播放器歌单管理器</h2>
+            <div class="form-group">
+                <label for="song-input">添加新歌曲 (输入文件名, 如: new_song.m4a)</label>
+                <input type="text" id="song-input" placeholder="输入后按回车或点击按钮">
+            </div>
+            <ul id="playlist-ul"></ul>
+            <button class="btn" id="save-playlist-btn">保存歌单</button>
+            <p style="font-size: 0.9em; opacity: 0.7;">说明：修改后请点击“保存歌单”，数据将存入浏览器。您需要修改主页的 JS 来读取这份歌单。</p>
+        </section>
+
+        <section class="card">
+            <h2>✍️ 个人信息编辑器</h2>
+            <form id="profile-form">
+                <div class="form-group">
+                    <label for="profile-line1">关于我 - 第一行</label>
+                    <input type="text" id="profile-line1">
+                </div>
+                <div class="form-group">
+                    <label for="profile-line2">关于我 - 第二行</label>
+                    <input type="text" id="profile-line2">
+                </div>
+                <div class="form-group">
+                    <label for="profile-line3">关于我 - 第三行</label>
+                    <input type="text" id="profile-line3">
+                </div>
+                <hr style="border-color: var(--primary-color);">
+                <div class="form-group">
+                    <label for="contact-qq">QQ 号</label>
+                    <input type="text" id="contact-qq">
+                </div>
+                <div class="form-group">
+                    <label for="contact-email">Email 地址</label>
+                    <input type="text" id="contact-email">
+                </div>
+                <div class="form-group">
+                    <label for="contact-github">GitHub 链接</label>
+                    <input type="url" id="contact-github">
+                </div>
+                <button type="submit" class="btn">保存所有信息</button>
+            </form>
+        </section>
+
+        <section class="card">
+            <h2>📝 简易动态/博客发布器</h2>
+            <p style="font-size: 0.9em; opacity: 0.7;">在这里写好内容，会自动生成你需要粘贴到 `index.html` 里的代码。</p>
+            <form id="post-generator-form">
+                <div class="form-group">
+                    <label for="post-title">标题</label>
+                    <input type="text" id="post-title" placeholder="我今天学习了...">
+                </div>
+                <div class="form-group">
+                    <label for="post-content">内容</label>
+                    <textarea id="post-content" placeholder="今天我学会了如何使用 localStorage..."></textarea>
+                </div>
+                <button type="submit" class="btn">生成 HTML 代码</button>
+            </form>
+            <div id="generated-code-wrapper" style="display: none;">
+                <hr style="border-color: var(--primary-color);">
+                <label>请复制下面的代码：</label>
+                <textarea id="generated-code" readonly></textarea>
+                <button class="btn btn-secondary" id="copy-code-btn">复制到剪贴板</button>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>🎨 网站主题定制器</h2>
+             <p style="font-size: 0.9em; opacity: 0.7;">在这里调整参数，会自动生成你需要粘贴到 `style.css` 里的代码。</p>
+            <form id="theme-generator-form">
+                <div class="form-group">
+                    <label for="theme-bg-url">背景图片 URL</label>
+                    <input type="url" id="theme-bg-url" placeholder="https://example.com/background.jpg">
+                </div>
+                 <button type="submit" class="btn">生成 CSS 代码</button>
+            </form>
+            <div id="generated-css-wrapper" style="display: none;">
+                <hr style="border-color: var(--primary-color);">
+                <label>请复制下面的 CSS 代码到 style.css 中替换原有背景样式：</label>
+                <textarea id="generated-css" readonly></textarea>
+                <button class="btn btn-secondary" id="copy-css-btn">复制到剪贴板</button>
+            </div>
+        </section>
+
     </div>
 
-    <div id="backend-content" style="display: none;">
-        <div class="card-base" style="max-width: 800px; padding: 40px; text-align: left;">
-            <h2>🎉 欢迎回来, Xist2024!</h2>
-            <p>您已成功登录到管理后台。</p>
-            <p>您可以在这里添加您的管理工具，例如：</p>
-            <ul>
-                <li>一个可以编辑歌单的表单。</li>
-                <li>网站访问数据统计。</li>
-                <li>一个新的想法或日记记录区。</li>
-            </ul>
-            <br>
-            <a href="/" style="color: #fff; text-decoration: none; font-weight: bold;">➡️ 返回主页</a>
-        </div>
-        </div>
+    <div id="toast"></div>
 
     <script>
-        // --- JavaScript 验证逻辑 ---
+    document.addEventListener('DOMContentLoaded', () => {
 
-        // 1. 在这里设置你的后台密码
-        const CORRECT_PASSWORD = "xistyyds"; // 请务必修改为一个更复杂的密码！
+        // ===================================================================================
+        //  ⚠️ 重要：主页 JS 修改指南 (请仔细阅读！)
+        // ===================================================================================
+        //
+        // 为了让您的主页(index.html)能够使用您在这里保存的数据，您需要修改您主页的 `script.js` 文件。
+        //
+        // 1. **修改歌单**:
+        //    在 `script.js` 里找到您的 `songList` 数组，像这样：
+        //    `const songList = ["song1.m4a", "song2.m4a", ...];`
+        //    把它修改为从 localStorage 读取，如果读取不到，就使用一个空数组：
+        //    `const songList = JSON.parse(localStorage.getItem('xist_playlist')) || [];`
+        //
+        // 2. **修改个人信息**:
+        //    在 `script.js` 的 `updateClockAndUptime` 或其他合适的初始化函数里，添加以下代码：
+        //    (您需要先给主页 index.html 里的对应元素加上 ID)
+        //    `document.getElementById('about-me-p1').textContent = localStorage.getItem('xist_profile_line1') || '一名十二岁初一学生';`
+        //    `document.getElementById('about-me-p2').textContent = localStorage.getItem('xist_profile_line2') || '喜欢玩游戏和用AI编程';`
+        //    `document.getElementById('about-me-p3').textContent = localStorage.getItem('xist_profile_line3') || '只想安安稳稳的过每一天';`
+        //    `document.getElementById('qq-link').onclick = () => copyToClipboard(localStorage.getItem('xist_contact_qq') || '3310088475', 'QQ号');`
+        //    `document.getElementById('email-link').onclick = () => copyToClipboard(localStorage.getItem('xist_contact_email') || 'Xist_2024@outlook.com', '电子邮件地址');`
+        //    `document.getElementById('github-link').href = localStorage.getItem('xist_contact_github') || 'https://github.com/Xist2024';`
+        //
+        // ===================================================================================
 
-        // 2. 获取页面上的元素
-        const loginInterface = document.getElementById('login-interface');
-        const backendContent = document.getElementById('backend-content');
-        const passwordInput = document.getElementById('password-input');
-        const loginButton = document.getElementById('login-button');
-        const errorMessage = document.getElementById('error-msg');
 
-        // 3. 登录成功后要执行的操作
-        function showBackend() {
-            loginInterface.style.display = 'none'; // 隐藏登录框
-            backendContent.style.display = 'block'; // 显示后台内容
+        // --- 通用 Toast 通知函数 ---
+        const toast = document.getElementById('toast');
+        function showToast(message, duration = 2000) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
         }
 
-        // 4. 处理登录请求
-        function attemptLogin() {
-            if (passwordInput.value === CORRECT_PASSWORD) {
-                showBackend();
-            } else {
-                errorMessage.textContent = '密码错误，请检查后重试。';
-                passwordInput.value = '';
-                passwordInput.focus();
+        // --- 1. 音乐歌单管理器逻辑 ---
+        const songInput = document.getElementById('song-input');
+        const playlistUl = document.getElementById('playlist-ul');
+        const savePlaylistBtn = document.getElementById('save-playlist-btn');
+        let playlist = JSON.parse(localStorage.getItem('xist_playlist')) || [];
+
+        function renderPlaylist() {
+            playlistUl.innerHTML = '';
+            playlist.forEach((song, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span>${song}</span><button data-index="${index}">&times;</button>`;
+                playlistUl.appendChild(li);
+            });
+        }
+
+        function addSong() {
+            const songName = songInput.value.trim();
+            if (songName) {
+                playlist.push(songName);
+                songInput.value = '';
+                renderPlaylist();
+            }
+        }
+
+        songInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addSong();
+            }
+        });
+        
+        playlistUl.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON') {
+                const index = e.target.dataset.index;
+                playlist.splice(index, 1);
+                renderPlaylist();
+            }
+        });
+
+        savePlaylistBtn.addEventListener('click', () => {
+            localStorage.setItem('xist_playlist', JSON.stringify(playlist));
+            showToast('歌单已成功保存！');
+        });
+
+        renderPlaylist(); // 页面加载时渲染一次
+
+        // --- 2. 个人信息编辑器逻辑 ---
+        const profileForm = document.getElementById('profile-form');
+        const profileInputs = {
+            line1: document.getElementById('profile-line1'),
+            line2: document.getElementById('profile-line2'),
+            line3: document.getElementById('profile-line3'),
+            qq: document.getElementById('contact-qq'),
+            email: document.getElementById('contact-email'),
+            github: document.getElementById('contact-github')
+        };
+        const profileKeys = {
+            line1: 'xist_profile_line1',
+            line2: 'xist_profile_line2',
+            line3: 'xist_profile_line3',
+            qq: 'xist_contact_qq',
+            email: 'xist_contact_email',
+            github: 'xist_contact_github'
+        };
+
+        function loadProfileData() {
+            for (const key in profileInputs) {
+                profileInputs[key].value = localStorage.getItem(profileKeys[key]) || '';
             }
         }
         
-        // 5. 绑定事件
-        loginButton.addEventListener('click', attemptLogin);
-        passwordInput.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                attemptLogin();
+        profileForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            for (const key in profileInputs) {
+                localStorage.setItem(profileKeys[key], profileInputs[key].value);
             }
+            showToast('个人信息已成功保存！');
         });
+
+        loadProfileData(); // 页面加载时加载数据
+
+        // --- 3. 博客/动态发布器逻辑 ---
+        const postGeneratorForm = document.getElementById('post-generator-form');
+        const postTitleInput = document.getElementById('post-title');
+        const postContentInput = document.getElementById('post-content');
+        const generatedCodeWrapper = document.getElementById('generated-code-wrapper');
+        const generatedCodeTextarea = document.getElementById('generated-code');
+        const copyCodeBtn = document.getElementById('copy-code-btn');
+
+        postGeneratorForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const title = postTitleInput.value.trim();
+            const content = postContentInput.value.trim().replace(/\n/g, '<br>');
+            if (!title || !content) {
+                showToast('标题和内容不能为空！', 3000);
+                return;
+            }
+
+            const htmlCode = `
+    <div class="card-base">
+        <h2>${title}</h2>
+        <p style="text-align: left; line-height: 1.6;">
+            ${content}
+        </p>
+        <p style="font-size: 0.8em; opacity: 0.6; text-align: right;">发布于：${new Date().toLocaleDateString('zh-CN')}</p>
+    </div>`;
+            
+            generatedCodeTextarea.value = htmlCode.trim();
+            generatedCodeWrapper.style.display = 'block';
+        });
+
+        copyCodeBtn.addEventListener('click', () => {
+            generatedCodeTextarea.select();
+            document.execCommand('copy');
+            showToast('代码已复制到剪贴板！');
+        });
+
+        // --- 4. 网站主题定制器逻辑 ---
+        const themeGeneratorForm = document.getElementById('theme-generator-form');
+        const bgUrlInput = document.getElementById('theme-bg-url');
+        const generatedCssWrapper = document.getElementById('generated-css-wrapper');
+        const generatedCssTextarea = document.getElementById('generated-css');
+        const copyCssBtn = document.getElementById('copy-css-btn');
+
+        themeGeneratorForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const bgUrl = bgUrlInput.value.trim();
+            if (!bgUrl) {
+                showToast('背景图片 URL 不能为空！', 3000);
+                return;
+            }
+
+            const cssCode = `
+body {
+    /* ... 您其他的 body 样式 ... */
+    background-image: url('${bgUrl}');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: rgba(0, 0, 0, 0.5);
+    background-blend-mode: overlay;
+    /* ... 您其他的 body 样式 ... */
+}`;
+            
+            generatedCssTextarea.value = cssCode.trim();
+            generatedCssWrapper.style.display = 'block';
+        });
+
+        copyCssBtn.addEventListener('click', () => {
+            generatedCssTextarea.select();
+            document.execCommand('copy');
+            showToast('CSS 代码已复制！');
+        });
+
+    });
     </script>
 </body>
 </html>
