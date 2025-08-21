@@ -800,3 +800,18 @@ body {
     z-index: 9999; /* 确保在最顶层 */
     transition: background-color 0.5s ease;
 }
+
+/* --- 移动端响应式修复：隐藏鼠标动效 --- */
+@media (max-width: 768px) {
+
+    /* 1. 隐藏所有尾巴上的点 */
+    .trail-dot {
+        display: none;
+    }
+
+    /* 2. 在移动设备上恢复默认的系统光标 */
+    /* (这很重要，否则在输入框里可能看不到光标) */
+    body {
+        cursor: auto;
+    }
+}
