@@ -438,3 +438,80 @@ document.addEventListener('DOMContentLoaded', () => {
     updateClockAndUptime();
     loadAndDisplayMotto(); // 同时加载格言
 });
+
+
+
+
+// ==================================================================
+// --- 丝滑鼠标跟随动效代码 开始 ---
+// (粘贴到 navigation.js 文件末尾)
+// ==================================================================
+
+// --- 配置参数 ---
+const TRAIL_LENGTH = 14; // 尾巴的点的数量
+const EASE_FACTOR = 0.45; // 缓动系数，值越小，延迟感越强，尾巴越长
+const HUE_START = 900;   // 颜色变化的起始 HSL 色相值
+
+// --- 全局变量 ---
+const dots = []; // 存储所有点的数组
+const mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 }; // 鼠标坐标，初始在屏幕中心
+
+// --- 初始化 ---
+// 创建指定数量的 DOM 元素（点），并初始化它们在数组中的状态
+for (let i = 0; i < TRAIL_LENGTH; i++) {
+    const dotElement = document.createElement('div');
+    dotElement.classList.add('trail-dot');
+    document.body.appendChild(dotElement);
+
+    dots.push({
+        element: dotElement,
+        x: mouse.x,
+        y: mouse.y,
+    });
+}
+
+// --- 事件监听 ---
+// 监听鼠标移动事件，更新鼠标坐标
+window.addEventListener('mousemove', (event) => {
+    mouse.x = event.clientX;
+    mouse.y = event.clientY;
+});
+
+// --- 动画循环 ---
+function animate() {
+    // 定义前一个点的位置，第一个点（索引为0）的目标是鼠标的当前位置
+    let prevX = mouse.x;
+    let prevY = mouse.y;
+
+    // 遍历所有的点
+    dots.forEach((dot, index) => {
+        // 使用线性插值（Lerping）计算当前点的新位置
+        dot.x += (prevX - dot.x) * EASE_FACTOR;
+        dot.y += (prevY - dot.y) * EASE_FACTOR;
+
+        // 计算当前点的大小和不透明度
+        const scale = (TRAIL_LENGTH - index) / TRAIL_LENGTH;
+        const opacity = scale * 0.8 + 0.1; // 保证最末尾的点也有一点点可见
+
+        // 更新 DOM 元素的样式
+        dot.element.style.transform = `translate(${dot.x}px, ${dot.y}px) scale(${scale})`;
+        dot.element.style.opacity = opacity;
+        
+        // HSL 颜色模型 (色相, 饱和度, 亮度)
+        // 我们通过改变色相（Hue）来创建彩虹色的效果
+        const hue = (HUE_START + index * 5) % 360;
+        dot.element.style.backgroundColor = `hsl(${hue}, 80%, 60%)`;
+
+        // 更新“前一个点”的位置，为下一次循环做准备
+        prevX = dot.x;
+        prevY = dot.y;
+    });
+
+    // 请求下一帧动画，形成无限循环
+    requestAnimationFrame(animate);
+}
+
+// --- 启动动画 ---
+animate();
+
+// --- 丝滑鼠标跟随动效代码 结束 ---
