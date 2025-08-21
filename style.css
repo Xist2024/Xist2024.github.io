@@ -9,14 +9,12 @@ body {
     align-items: center;
     min-height: 100vh;
     color: #fff; /* 全局文字颜色，确保在深色背景上可见 */
+    
+    /* --- 修改后的背景 --- */
+    background-color: #007bff; /* 备用背景色 */
+    background-image: linear-gradient(to bottom right, #007bff, #20c997);
+    cursor: none;
 
-    /* --- ↓↓↓ 您只需要修改下面这一行 ↓↓↓ --- */
-    background-image: linear-gradient(to bottom right, #007bff, #20c997); 
-    /* --- ↑↑↑ 您只需要修改上面这一行 ↑↑↑ --- */
-    
-    /* 备用背景色，如果浏览器不支持渐变会显示这个颜色 */
-    background-color: #007bff; 
-    
     padding: 20px; /* 整体内边距 */
     box-sizing: border-box; /* 边框盒模型 */
     gap: 30px; /* 增加卡片之间的间距 */
@@ -786,4 +784,19 @@ body {
     font-size: 1em;
     font-weight: bold;
     text-shadow: 0 0 5px rgba(0,0,0,0.5);
+
+}
+/* --- 丝滑鼠标跟随动效样式 --- */
+.trail-dot {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #ffcc00;
+    pointer-events: none; /* 关键：让点不捕获鼠标事件 */
+    transform: translate(-50%, -50%); /* 让点的中心对准光标 */
+    z-index: 9999; /* 确保在最顶层 */
+    transition: background-color 0.5s ease;
 }
